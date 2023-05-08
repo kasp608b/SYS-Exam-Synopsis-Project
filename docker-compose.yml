@@ -1,0 +1,94 @@
+version: '3.4'
+
+services:
+  rabbitmq:
+   image: rabbitmq:3-management
+   build:
+      context: .
+      dockerfile: rabbit/Dockerfile
+   volumes:
+      - ./rabbitmq/etc/definitions.json:/etc/rabbitmq/definitions.json
+      - ./rabbitmq/etc/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./rabbitmq/data:/var/lib/rabbitmq/mnesia/rabbit@my-rabbit
+      - ./rabbitmq/logs:/var/log/rabbitmq/log
+   ports:
+     - "15673:15672"
+     - "5672:5672"
+   healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:15672"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  orderapi:
+    image: ${DOCKER_REGISTRY-}orderapi
+    build:
+      context: .
+      dockerfile: OrderApi/Dockerfile
+    environment:
+      - HOSTNAMERABBIT=rabbitmq
+    restart: on-failure 
+    depends_on:
+       rabbitmq:
+        condition: service_healthy
+    links: 
+        - rabbitmq
+    ports:
+      - 9000:80
+      - 9001:443
+
+  productapi:
+    image: ${DOCKER_REGISTRY-}productapi
+    build:
+      context: .
+      dockerfile: ProductApi/Dockerfile
+    environment:
+      - HOSTNAMERABBIT=rabbitmq
+    restart: on-failure 
+    depends_on:
+       rabbitmq:
+        condition: service_healthy
+    links: 
+        - rabbitmq
+    ports:
+      - 9002:80
+      - 9003:443
+
+
+  customerapi:
+    image: ${DOCKER_REGISTRY-}customerapi
+    build:
+      context: .
+      dockerfile: CustomerApi/Dockerfile
+    environment:
+      - HOSTNAMERABBIT=rabbitmq
+    restart: on-failure 
+    depends_on:
+       rabbitmq:
+        condition: service_healthy
+    links: 
+        - rabbitmq
+    ports:
+      - 9004:80
+      - 9005:443
+
+  apigateway:
+    image: ${DOCKER_REGISTRY-}apigateway
+    build:
+      context: .
+      dockerfile: ApiGateway/Dockerfile
+    ports:
+      - "8080:80"
+      - "7430:443"
+      
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+
+  grafana: 
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
