@@ -24,12 +24,33 @@ namespace SharedModels.EventStoreCQRS
 
             await foreach (var @event in readResult)
             {
-                var eventData = Deserialize(@event);
+                var eventData = Deserialize<IEvent>(@event);
 
                 aggregate.When(eventData!);
             }
 
             return aggregate;
+        }
+        
+        private static TEvent Deserialize<TEvent>(ResolvedEvent @event) where TEvent : IEvent
+        {
+            var type = Type.GetType(@event.Event.EventType);
+
+            if (type == null)
+            {
+                throw new InvalidOperationException($"Cannot find type '{@event.Event.EventType}'");
+            }
+
+            var json = Encoding.UTF8.GetString(@event.Event.Data.ToArray());
+
+            var deserializedEvent = JsonSerializer.Deserialize<TEvent>(json);
+
+            if (deserializedEvent == null)
+            {
+                throw new InvalidOperationException($"Could not deserialize '{@event.Event.EventType}'");
+            }
+
+            return deserializedEvent;
         }
 
         private static object Deserialize(ResolvedEvent @event)
