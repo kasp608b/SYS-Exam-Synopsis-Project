@@ -31,7 +31,24 @@ namespace SharedModels.EventStoreCQRS
 
             return aggregate;
         }
-        
+
+        public static async Task append(this EventStoreClient eventStore, IEvent @event, string aggregateType, CancellationToken cancellationToken)
+        {
+            var eventData = new EventData(
+                Uuid.NewUuid(),
+                @event.GetType().Name,
+                JsonSerializer.SerializeToUtf8Bytes(@event)
+            );
+
+            await eventStore.AppendToStreamAsync(
+                $"{aggregateType}-{@event.Id}",
+                StreamState.Any,
+                new[] { eventData },
+                cancellationToken: cancellationToken
+            );
+        }
+
+
         private static TEvent Deserialize<TEvent>(ResolvedEvent @event) where TEvent : IEvent
         {
             var type = Type.GetType(@event.Event.EventType);
