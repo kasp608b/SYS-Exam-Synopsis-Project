@@ -1,4 +1,5 @@
-﻿using EventStore.Client;
+﻿using Common.EventStoreCQRS;
+using EventStore.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace SharedModels.EventStoreCQRS
 {
     public static class EventStoreClientExtensions
     {
-        public static async Task<TAggregate?> Find<TAggregate, TId>(this EventStoreClient eventStore, Guid id, CancellationToken cancellationToken)
+        public static async Task<TAggregate?> Find<TAggregate, TId>(this EventStoreClient eventStore, Guid id, EventDeserializer eventDeserializer, CancellationToken cancellationToken)
     where TAggregate : Aggregate<TId>, new()
         {
             var readResult = eventStore.ReadStreamAsync(
@@ -24,7 +25,7 @@ namespace SharedModels.EventStoreCQRS
 
             await foreach (var @event in readResult)
             {
-                var eventData = Deserialize<IEvent>(@event);
+                var eventData = eventDeserializer.Deserialize(@event.Event.Data.ToArray());
 
                 aggregate.When(eventData!);
             }
@@ -32,12 +33,12 @@ namespace SharedModels.EventStoreCQRS
             return aggregate;
         }
 
-        public static async Task append(this EventStoreClient eventStore, IEvent @event, string aggregateType, CancellationToken cancellationToken)
+        public static async Task Append<TEvent>(this EventStoreClient eventStore, TEvent @event, string aggregateType, EventSerializer eventSerializer ,CancellationToken cancellationToken) where TEvent : IEvent
         {
             var eventData = new EventData(
                 Uuid.NewUuid(),
                 @event.GetType().Name,
-                JsonSerializer.SerializeToUtf8Bytes(@event)
+                eventSerializer.Serialize(@event)
             );
 
             await eventStore.AppendToStreamAsync(
@@ -48,15 +49,17 @@ namespace SharedModels.EventStoreCQRS
             );
         }
 
-
+        /*
         private static TEvent Deserialize<TEvent>(ResolvedEvent @event) where TEvent : IEvent
         {
+            
             var type = Type.GetType(@event.Event.EventType);
 
             if (type == null)
             {
                 throw new InvalidOperationException($"Cannot find type '{@event.Event.EventType}'");
             }
+            
 
             var json = Encoding.UTF8.GetString(@event.Event.Data.ToArray());
 
@@ -72,6 +75,7 @@ namespace SharedModels.EventStoreCQRS
 
         private static object Deserialize(ResolvedEvent @event)
         {
+            
             var type = Type.GetType(@event.Event.EventType);
 
             if (type == null)
@@ -90,5 +94,6 @@ namespace SharedModels.EventStoreCQRS
 
             return deserializedEvent;
         }
+        */
     }
 }
