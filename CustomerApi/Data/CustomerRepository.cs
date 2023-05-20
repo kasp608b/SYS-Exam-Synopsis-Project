@@ -25,7 +25,7 @@ namespace CustomerApi.Data
             db.SaveChanges();
         }
 
-        public Customer Get(int id)
+        public Customer Get(Guid id)
         {
             return db.Customers.FirstOrDefault(c => c.CustomerId == id);
         }
@@ -35,7 +35,7 @@ namespace CustomerApi.Data
             return db.Customers.ToList();
         }
 
-        public void Remove(int id)
+        public void Remove(Guid id)
         {
             var customer = db.Customers.FirstOrDefault(c => c.CustomerId == id);
             db.Customers.Remove(customer);

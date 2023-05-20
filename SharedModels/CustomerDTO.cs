@@ -3,7 +3,7 @@ namespace SharedModels
 {
     public class CustomerDto
     {
-        public int CustomerId { get; set; }
+        public Guid CustomerId { get; set; }
 
         public string CompanyName { get; set; }
 

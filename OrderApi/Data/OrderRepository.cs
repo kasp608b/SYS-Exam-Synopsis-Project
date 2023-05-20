@@ -28,7 +28,7 @@ namespace OrderApi.Data
             db.SaveChanges();
         }
 
-        Order IRepository<Order>.Get(int id)
+        Order IRepository<Order>.Get(Guid id)
         {
             return db.Orders.Include(o => o.Orderlines).FirstOrDefault(o => o.OrderId == id);
         }
@@ -38,7 +38,7 @@ namespace OrderApi.Data
             return db.Orders.Include(o => o.Orderlines).ToList();
         }
 
-        public IEnumerable<Order> GetByCustomer(int customerId)
+        public IEnumerable<Order> GetByCustomer(Guid customerId)
         {
             var ordersForCustomer = from o in db.Orders.Include(o => o.Orderlines)
                                     where o.CustomerId == customerId
@@ -47,7 +47,7 @@ namespace OrderApi.Data
             return ordersForCustomer.ToList();
         }
 
-        void IRepository<Order>.Remove(int id)
+        void IRepository<Order>.Remove(Guid id)
         {
             var order = db.Orders.FirstOrDefault(p => p.OrderId == id);
             db.Orders.Remove(order);

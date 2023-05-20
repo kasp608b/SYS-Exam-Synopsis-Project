@@ -27,7 +27,7 @@ namespace ProductApi.Data
             db.SaveChanges();
         }
 
-        Product IRepository<Product>.Get(int id)
+        Product IRepository<Product>.Get(Guid id)
         {
             return db.Products.FirstOrDefault(p => p.ProductId == id);
         }
@@ -37,7 +37,7 @@ namespace ProductApi.Data
             return db.Products.ToList();
         }
 
-        void IRepository<Product>.Remove(int id)
+        void IRepository<Product>.Remove(Guid id)
         {
             var product = db.Products.FirstOrDefault(p => p.ProductId == id);
             db.Products.Remove(product);

@@ -2,6 +2,6 @@
 {
     public interface IServiceGateway<T>
     {
-        T Get(int id);
+        T Get(Guid id);
     }
 }

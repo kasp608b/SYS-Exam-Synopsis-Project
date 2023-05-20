@@ -17,7 +17,7 @@ namespace OrderApi.Infrastructure
             bus.Dispose();
         }
 
-        public void PublishCreditStandingChangedMessage(int customerId, bool newCreditStanding)
+        public void PublishCreditStandingChangedMessage(Guid customerId, bool newCreditStanding)
         {
             var message = new CreditStandingChangedMessage
             {
@@ -30,7 +30,7 @@ namespace OrderApi.Infrastructure
         }
 
 
-        public void PublishOrderStatusChangedMessage(int? customerId, List<OrderLineDto> orderLines, string topic)
+        public void PublishOrderStatusChangedMessage(Guid? customerId, List<OrderLineDto> orderLines, string topic)
         {
             var message = new OrderStatusChangedMessage
             {

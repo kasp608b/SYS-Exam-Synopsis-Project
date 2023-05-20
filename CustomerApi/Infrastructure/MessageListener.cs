@@ -76,7 +76,7 @@ namespace CustomerApi.Infrastructure
 
                 if (message.CustomerId != null && customerRepo != null && emailService != null)
                 {
-                    var customer = customerRepo.Get((int)message.CustomerId);
+                    var customer = customerRepo.Get((Guid)message.CustomerId);
 
                     var sb = new System.Text.StringBuilder();
                     sb.AppendLine($"Dear {customer.CompanyName}");
@@ -103,7 +103,7 @@ namespace CustomerApi.Infrastructure
 
                 if (message.CustomerId != null && customerRepo != null && emailService != null && productServiceGateway != null)
                 {
-                    var customer = customerRepo.Get((int)message.CustomerId);
+                    var customer = customerRepo.Get((Guid)message.CustomerId);
 
                     decimal totalPrice = 0;
 
@@ -143,7 +143,7 @@ namespace CustomerApi.Infrastructure
 
                 if (customerRepo != null && emailService != null && productServiceGateway != null)
                 {
-                    var customer = customerRepo.Get((int)message.orderDto.CustomerId);
+                    var customer = customerRepo.Get((Guid)message.orderDto.CustomerId);
 
                     decimal totalPrice = 0;
 
@@ -180,7 +180,7 @@ namespace CustomerApi.Infrastructure
 
                 if (customerRepo != null)
                 {
-                    var customer = customerRepo.Get((int)message.CustomerId);
+                    var customer = customerRepo.Get((Guid)message.CustomerId);
 
                     customer.CreditStanding = message.NewCreditStanding;
 
@@ -202,9 +202,9 @@ namespace CustomerApi.Infrastructure
                 var productServiceGateway = services.GetService<IServiceGateway<ProductDto>>();
 
 
-                if (message.CustomerId != null && customerRepo != null && emailService != null && productServiceGateway != null)
+                if (message.CustomerId != Guid.Empty && customerRepo != null && emailService != null && productServiceGateway != null)
                 {
-                    var customer = customerRepo.Get((int)message.CustomerId);
+                    var customer = customerRepo.Get((Guid)message.CustomerId);
 
                     customer.CreditStanding = false;
 

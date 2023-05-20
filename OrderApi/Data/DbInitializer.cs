@@ -18,15 +18,20 @@ namespace OrderApi.Data
             {
                 return;   // DB has been seeded
             }
-            
+            var orderId = Guid.Parse("0d5909b4-e6ee-432f-8b2c-5823ef75d0a1");
+
+            var productId = Guid.Parse("c4e5ee96-faa4-4fd1-a2ff-801dc2722dc3");
+
+            var customerId = Guid.Parse("2749cb35-1664-4c53-aa45-aff486bedf39");
+
             List<Order> orders = new List<Order>
             {
-                new Order { Date = DateTime.Today, Status = OrderStatus.proccesing}
+                new Order { OrderId = orderId, Date = DateTime.Today, Status = OrderStatus.proccesing, CustomerId = customerId}
             };
 
             List<OrderLine> orderLines = new List<OrderLine>
             {
-                 new OrderLine {OrderId = 1, NoOfItems = 5, ProductId = 1},
+                 new OrderLine {OrderId = orderId , NoOfItems = 5, ProductId = productId},
             };
 
             context.Orders.AddRange(orders);

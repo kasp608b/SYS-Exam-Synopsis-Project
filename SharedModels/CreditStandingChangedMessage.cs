@@ -8,7 +8,7 @@ namespace SharedModels
 {
     public class CreditStandingChangedMessage
     {
-        public int CustomerId { get; set; }
+        public Guid CustomerId { get; set; }
         public bool NewCreditStanding { get; set; }
     }
 }

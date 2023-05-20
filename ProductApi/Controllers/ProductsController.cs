@@ -42,7 +42,7 @@ namespace ProductApi.Controllers
 
         // GET products/5
         [HttpGet("{id}", Name = "GetProduct")]
-        public IActionResult Get(int id)
+        public IActionResult Get(Guid id)
         {
             try
             {
@@ -88,7 +88,7 @@ namespace ProductApi.Controllers
 
         // PUT products/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] ProductDto productDto)
+        public IActionResult Put(Guid id, [FromBody] ProductDto productDto)
         {
             try
             {
@@ -124,7 +124,7 @@ namespace ProductApi.Controllers
 
         // DELETE products/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(Guid id)
         {
             try
             {

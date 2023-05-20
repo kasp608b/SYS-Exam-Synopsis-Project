@@ -40,7 +40,7 @@ namespace CustomerApi.Controllers
 
         // GET customer/5
         [HttpGet("{id}", Name = "GetCustomer")]
-        public IActionResult Get(int id)
+        public IActionResult Get(Guid id)
         {
 
             try
@@ -89,7 +89,7 @@ namespace CustomerApi.Controllers
 
         // PUT customer/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] CustomerDto customerDto)
+        public IActionResult Put(Guid id, [FromBody] CustomerDto customerDto)
         {
 
             try
@@ -124,7 +124,7 @@ namespace CustomerApi.Controllers
 
         // DELETE products/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(Guid id)
         {
             try
             {

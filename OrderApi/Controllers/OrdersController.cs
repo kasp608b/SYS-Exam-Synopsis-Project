@@ -59,7 +59,7 @@ namespace OrderApi.Controllers
         /// <param name="order"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] OrderDto orderDto)
+        public IActionResult Put(Guid id, [FromBody] OrderDto orderDto)
         {
             if (orderDto == null || orderDto.OrderId != id)
             {
@@ -92,7 +92,7 @@ namespace OrderApi.Controllers
 
         // GET orders/5
         [HttpGet("{id}", Name = "GetOrder")]
-        public IActionResult Get(int id)
+        public IActionResult Get(Guid id)
         {
             Order item;
 
@@ -116,7 +116,7 @@ namespace OrderApi.Controllers
 
         // GET orders/5
         [HttpGet("GetByCustomer/{id}", Name = "GetOrderByCustomer")]
-        public IActionResult GetbyCustomer(int id)
+        public IActionResult GetbyCustomer(Guid id)
         {
             var orderDtoList = new List<OrderDto>();
 
@@ -148,7 +148,7 @@ namespace OrderApi.Controllers
         // This action method was provided to support request aggregate
         // "Orders by product" in OnlineRetailerApiGateway.
         [HttpGet("product/{id}", Name = "GetOrderByProduct")]
-        public IEnumerable<Order> GetByProduct(int id)
+        public IEnumerable<Order> GetByProduct(Guid id)
         {
             List<Order> ordersWithSpecificProduct = new List<Order>();
 
@@ -171,7 +171,7 @@ namespace OrderApi.Controllers
             var customer = _customerGateway.Get(orderDto.CustomerId);
 
 
-            if (customer.CustomerId != orderDto.CustomerId || customer.CustomerId == 0)
+            if (customer.CustomerId != orderDto.CustomerId || customer.CustomerId == Guid.Empty)
             {
                 return BadRequest("The customer  does not exist");
             }
@@ -257,7 +257,7 @@ namespace OrderApi.Controllers
         // This action method cancels an order and publishes an OrderStatusChangedMessage
         // with topic set to "cancelled".
         [HttpPut("{id}/cancel")]
-        public IActionResult Cancel(int id)
+        public IActionResult Cancel(Guid id)
         {
 
             try
@@ -308,7 +308,7 @@ namespace OrderApi.Controllers
         // This action method ships an order and publishes an OrderStatusChangedMessage.
         // with topic set to "shipped".
         [HttpPut("{id}/ship")]
-        public IActionResult Ship(int id)
+        public IActionResult Ship(Guid id)
         {
             try
             {
@@ -344,7 +344,7 @@ namespace OrderApi.Controllers
         // This action method marks an order as paid and publishes a CreditStandingChangedMessage
         // (which have not yet been implemented), if the credit standing changes.
         [HttpPut("{id}/pay")]
-        public IActionResult Pay(int id)
+        public IActionResult Pay(Guid id)
         {
             try
             {
@@ -384,7 +384,7 @@ namespace OrderApi.Controllers
         }
 
         //Check if the customers credit standing has changed
-        private bool CreditStandingHasChanged(int customerId)
+        private bool CreditStandingHasChanged(Guid customerId)
         {
 
             //If any of the customers orders are shipped then that mens that the customer still has bad creadit standing

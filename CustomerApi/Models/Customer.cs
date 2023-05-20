@@ -1,8 +1,13 @@
-﻿namespace CustomerApi.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace CustomerApi.Models
 {
     public class Customer
     {
-        public int CustomerId { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid CustomerId { get; set; }
 
         public string CompanyName { get; set; }
 

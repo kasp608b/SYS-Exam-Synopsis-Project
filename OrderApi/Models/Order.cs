@@ -2,10 +2,10 @@
 {
     public class Order
     {
-        public int OrderId { get; set; }
+        public Guid OrderId { get; set; }
         public DateTime? Date { get; set; }
         public OrderStatus Status { get; set; }
-        public int CustomerId { get; set; }
+        public Guid CustomerId { get; set; }
         public List<OrderLine> Orderlines { get; set; }
 
         public Order()

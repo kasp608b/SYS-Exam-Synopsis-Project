@@ -2,7 +2,7 @@
 {
     public class OrderStatusChangedMessage
     {
-        public int? CustomerId { get; set; }
+        public Guid? CustomerId { get; set; }
         public List<OrderLineDto> OrderLines { get; set; }
 
         public OrderStatusChangedMessage()

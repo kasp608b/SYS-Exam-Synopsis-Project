@@ -12,7 +12,7 @@ namespace OrderApi.Infrastructure
             customerServiceBaseUrl = baseUrl;
         }
 
-        public CustomerDto Get(int id)
+        public CustomerDto Get(Guid id)
         {
             
             RestClient c = new RestClient(customerServiceBaseUrl);
