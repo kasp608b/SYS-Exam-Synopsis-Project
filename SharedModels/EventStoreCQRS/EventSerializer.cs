@@ -22,6 +22,7 @@ namespace Common.EventStoreCQRS
 
         public byte[] Serialize<TEvent>(TEvent eventInstance) where TEvent : IEvent
         {
+            //Can fail if the type information is not there.
             string jsonData = JsonConvert.SerializeObject(eventInstance, settings);
             return Encoding.UTF8.GetBytes(jsonData);
         }

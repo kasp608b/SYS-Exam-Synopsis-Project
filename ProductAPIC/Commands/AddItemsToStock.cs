@@ -12,7 +12,5 @@ namespace ProductAPIC.Commands
         public Guid Id { get; set; }
 
         public int ItemsInStock { get; set; }
-
-        public DateTime AddedAt { get; set; }
     }
 }
