@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SharedModels.ProductAPICommon.Events
 {
-    internal class ProductCreated : IEvent
+    public class ProductCreated : IEvent
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

@@ -7,8 +7,12 @@ using System.Threading.Tasks;
 
 namespace SharedModels.ProductAPICommon.Events
 {
-    internal class ProductCategoryChanged : IEvent
+    public class ProductCategoryChanged : IEvent
     {
-        public Guid Id => throw new NotImplementedException();
+        public Guid Id { get; set; }
+
+        public string Category { get; set; }
+
+        public DateTime ChangedAt { get; set; }
     }
 }
