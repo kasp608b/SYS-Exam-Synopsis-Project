@@ -27,7 +27,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kubernetes", "Kubernetes", 
 		kubernetes\rabbitmq.yml = kubernetes\rabbitmq.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway", "ApiGateway\ApiGateway.csproj", "{D328E4B9-9D61-4F0F-B1CF-733951C96723}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGateway", "ApiGateway\ApiGateway.csproj", "{D328E4B9-9D61-4F0F-B1CF-733951C96723}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductAPIC", "ProductAPIC\ProductAPIC.csproj", "{87E180D1-2C3B-47CE-8E7C-74226E217768}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +61,10 @@ Global
 		{D328E4B9-9D61-4F0F-B1CF-733951C96723}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D328E4B9-9D61-4F0F-B1CF-733951C96723}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D328E4B9-9D61-4F0F-B1CF-733951C96723}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87E180D1-2C3B-47CE-8E7C-74226E217768}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87E180D1-2C3B-47CE-8E7C-74226E217768}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87E180D1-2C3B-47CE-8E7C-74226E217768}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87E180D1-2C3B-47CE-8E7C-74226E217768}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -54,6 +54,11 @@ services:
       - 9002:80
       - 9003:443
 
+  productapic:
+    image: ${DOCKER_REGISTRY-}productapic
+    build:
+      context: .
+      dockerfile: ProductAPIC/Dockerfile  
 
   customerapi:
     image: ${DOCKER_REGISTRY-}customerapi
@@ -107,3 +112,5 @@ services:
   #  image: grafana/grafana
   #  ports:
   #    - "3000:3000"
+
+
