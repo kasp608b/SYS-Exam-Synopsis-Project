@@ -17,7 +17,11 @@ namespace ProductApiQ.EventHandlers
 
         public Task HandleAsync(ItemsAddedToStock @event)
         {
+
             var product = repository.Get(@event.Id);
+
+            if (product == null)
+                throw new InvalidOperationException("Product not found, cannot add items to stock for Product that does not exist.");
 
             product.ItemsInStock += @event.ItemsInStock;
 

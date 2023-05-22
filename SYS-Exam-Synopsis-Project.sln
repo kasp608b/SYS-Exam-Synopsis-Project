@@ -2,6 +2,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductApiQ", "ProductApi\ProductApiQ.csproj", "{1AB07F84-B486-4705-9F0B-425D2EE530E8}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderApi", "OrderApi\OrderApi.csproj", "{559DB926-84A6-4388-A849-138C85B00412}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{ED48C062-F327-42CB-9F74-DD59EB01FE54}"
@@ -28,8 +30,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGateway", "ApiGateway\ApiGateway.csproj", "{D328E4B9-9D61-4F0F-B1CF-733951C96723}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductAPIC", "ProductAPIC\ProductAPIC.csproj", "{87E180D1-2C3B-47CE-8E7C-74226E217768}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductApiQ", "ProductApi\ProductApiQ.csproj", "{8799ED62-8709-40BB-86D7-1AE5FD192F76}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
