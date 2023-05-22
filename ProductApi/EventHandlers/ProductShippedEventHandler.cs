@@ -20,12 +20,13 @@ namespace ProductApiQ.EventHandlers
             var product = repository.Get(@event.Id);
 
             if (product == null)
-                throw new InvalidOperationException("Product not found, cannot change price for Product that does not exist.");
+                throw new InvalidOperationException("Product not found, cannot ship Product that does not exist.");
 
-            product.Price = @event.Price;
+            product.ItemsReserved -= @event.AmountShipped;
+            product.ItemsInStock -= @event.AmountShipped;
 
             repository.Edit(product);
-
+            
             return Task.CompletedTask;
         }
     }
