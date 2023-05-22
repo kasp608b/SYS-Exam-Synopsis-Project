@@ -68,8 +68,8 @@ services:
     links: 
         - rabbitmq
     ports:
-      - 9010:80
-      - 9010:443
+      - 9006:80
+      - 9007:443
 
   customerapi:
     image: ${DOCKER_REGISTRY-}customerapi
@@ -98,7 +98,7 @@ services:
       - "7430:443"
 
   producteventstore.db:
-    image: eventstore/eventstore:21.10.0-buster-slim
+    image: eventstore/eventstore:20.10.2-buster-slim
     environment:
       - EVENTSTORE_CLUSTER_SIZE=1
       - EVENTSTORE_RUN_PROJECTIONS=All
@@ -109,8 +109,20 @@ services:
       - EVENTSTORE_ENABLE_EXTERNAL_TCP=true
       - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
     ports:
-      - "1114:1113"
-      - "2114:2113"
+      - "1113:1113"
+      - "2113:2113"
+    volumes:
+      - type: volume
+        source: eventstore-volume-data
+        target: /var/lib/eventstore
+      - type: volume
+        source: eventstore-volume-logs
+        target: /var/log/eventstore
+
+volumes:
+  eventstore-volume-data:
+  eventstore-volume-logs:
+   
   
   #prometheus:
    # image: prom/prometheus

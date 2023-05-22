@@ -2,6 +2,7 @@
 using EventStore.Client;
 using Newtonsoft.Json;
 using ProductApiQ.EventHandlers;
+using SharedModels.EventStoreCQRS;
 using SharedModels.ProductAPICommon.Events;
 
 namespace ProductApiQ.Infrastructure
@@ -25,16 +26,16 @@ namespace ProductApiQ.Infrastructure
 
                 var deserializer = services.GetService<EventDeserializer>();
 
-                var itemsAddedToStockEventHandler = services.GetService<ItemsAddedToStockEventHandler>();
-                var itemsRemovedFromStockEventHandler = services.GetService<ItemsRemovedFromStockEventHandler>();
-                var productCategoryChangedEventHandler = services.GetService<ProductCategoryChangedEventHandler>();
-                var productCreatedEventHandler = services.GetService<ProductCreatedEventHandler>();
-                var productDeletedEventHandler = services.GetService<ProductDeletedEventHandler>();
-                var productNameChangedEventHandler = services.GetService<ProductNameChangedEventHandler>();
-                var productPriceChangedEventHandler = services.GetService<ProductPriceChangedEventHandler>();
-                var productShippedEventHandler = services.GetService<ProductShippedEventHandler>();
-                var reservedItemsDecreasedEventHandler = services.GetService<ReservedItemsDecreasedEventHandler>();
-                var reservedItemsIncreasedEventHandler = services.GetService<ReservedItemsIncreasedEventHandler>();
+                var itemsAddedToStockEventHandler = services.GetService<IEventHandler<ItemsAddedToStock>>();
+                var itemsRemovedFromStockEventHandler = services.GetService<IEventHandler<ItemsRemovedFromStock>>();
+                var productCategoryChangedEventHandler = services.GetService<IEventHandler<ProductCategoryChanged>>();
+                var productCreatedEventHandler = services.GetService<IEventHandler<ProductCreated>>();
+                var productDeletedEventHandler = services.GetService<IEventHandler<ProductDeleted>>();
+                var productNameChangedEventHandler = services.GetService<IEventHandler<ProductNameChanged>>();
+                var productPriceChangedEventHandler = services.GetService<IEventHandler<ProductPriceChanged>>();
+                var productShippedEventHandler = services.GetService<IEventHandler<ProductShipped>>();
+                var reservedItemsDecreasedEventHandler = services.GetService<IEventHandler<ReservedItemsDecreased>>();
+                var reservedItemsIncreasedEventHandler = services.GetService<IEventHandler<ReservedItemsIncreased>>();
 
                 await eventStoreClient.SubscribeToAllAsync(
                 FromAll.Start,

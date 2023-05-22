@@ -8,7 +8,7 @@ services:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
 
-  productapi:
+  productapiq:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     volumes:

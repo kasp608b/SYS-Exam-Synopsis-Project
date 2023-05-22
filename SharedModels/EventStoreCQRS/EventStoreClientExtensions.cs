@@ -15,12 +15,19 @@ namespace SharedModels.EventStoreCQRS
         public static async Task<TAggregate?> Find<TAggregate, TId>(this EventStoreClient eventStore, Guid id, EventDeserializer eventDeserializer, CancellationToken cancellationToken)
     where TAggregate : Aggregate<TId>, new()
         {
+          
             var readResult = eventStore.ReadStreamAsync(
                 Direction.Forwards,
                 $"{typeof(TAggregate).Name}-{id}",
                 StreamPosition.Start,
+                StreamState.StreamExists,
                 cancellationToken: cancellationToken
             );
+
+            if (await readResult.ReadState == ReadState.StreamNotFound)
+            {
+                return null;
+            }
 
             var aggregate = new TAggregate();
 

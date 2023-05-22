@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProductAPIC.Command;
 using ProductAPIC.CommandHandlers;
 using ProductAPIC.Commands;
+using SharedModels.EventStoreCQRS;
 
 namespace ProductAPIC.Controllers
 {
@@ -10,28 +11,28 @@ namespace ProductAPIC.Controllers
     [ApiController]
     public class ProductAPICController : ControllerBase
     {
-        AddItemsToStockCommandHandler _addItemsToStockCommandHandler;
-        ChangeProductCategoryCommandHandler _changeProductCategoryCommandHandler;
-        ShipProductCommandHandler _shipProductCommandHandler;
-        ChangeProductNameCommandHandler _changeProductNameCommandHandler;
-        ChangeProductPriceCommandHandler _changeProductPriceCommandHandler;
-        CreateProductCommandHandler _createProductCommandHandler;
-        DecreaseReservedItemsCommandHandler _decreaseReservedItemsCommandHandler;
-        DeleteProductCommandHandler _deleteProductCommandHandler;
-        IncreaseReservedItemsCommandHandler _increaseReservedItemsCommandHandler;
-        RemoveItemsFromStockCommandHandler _removeItemsFromStockCommandHandler;
+        ICommandHandler<AddItemsToStock> _addItemsToStockCommandHandler;
+        ICommandHandler<ChangeProductCategory> _changeProductCategoryCommandHandler;
+        ICommandHandler<ShipProduct> _shipProductCommandHandler;
+        ICommandHandler<ChangeProductName> _changeProductNameCommandHandler;
+        ICommandHandler<ChangeProductPrice> _changeProductPriceCommandHandler;
+        ICommandHandler<CreateProduct> _createProductCommandHandler;
+        ICommandHandler<DecreaseReservedItems> _decreaseReservedItemsCommandHandler;
+        ICommandHandler<DeleteProduct> _deleteProductCommandHandler;
+        ICommandHandler<IncreaseReservedItems> _increaseReservedItemsCommandHandler;
+        ICommandHandler<RemoveItemsFromStock> _removeItemsFromStockCommandHandler;
         
         public ProductAPICController(
-            AddItemsToStockCommandHandler addItemsToStockCommandHandler, 
-            ChangeProductCategoryCommandHandler changeProductCategoryCommandHandler,
-            ShipProductCommandHandler shipProductCommandHandler,
-            ChangeProductNameCommandHandler changeProductNameCommandHandler,
-            ChangeProductPriceCommandHandler changeProductPriceCommandHandler,
-            CreateProductCommandHandler createProductCommandHandler,
-            DecreaseReservedItemsCommandHandler decreaseReservedItemsCommandHandler,
-            DeleteProductCommandHandler deleteProductCommandHandler, 
-            IncreaseReservedItemsCommandHandler increaseReservedItemsCommandHandler, 
-            RemoveItemsFromStockCommandHandler removeItemsFromStockCommandHandler
+            ICommandHandler<AddItemsToStock> addItemsToStockCommandHandler,
+            ICommandHandler<ChangeProductCategory> changeProductCategoryCommandHandler,
+            ICommandHandler<ShipProduct> shipProductCommandHandler,
+            ICommandHandler<ChangeProductName> changeProductNameCommandHandler,
+            ICommandHandler<ChangeProductPrice> changeProductPriceCommandHandler,
+            ICommandHandler<CreateProduct> createProductCommandHandler,
+            ICommandHandler<DecreaseReservedItems> decreaseReservedItemsCommandHandler,
+            ICommandHandler<DeleteProduct> deleteProductCommandHandler,
+            ICommandHandler<IncreaseReservedItems> increaseReservedItemsCommandHandler,
+            ICommandHandler<RemoveItemsFromStock> removeItemsFromStockCommandHandler
             )
         {
             _addItemsToStockCommandHandler = addItemsToStockCommandHandler;
