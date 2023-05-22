@@ -19,6 +19,9 @@ namespace ProductApiQ.EventHandlers
         {
             var product = repository.Get(@event.Id);
 
+            if (product == null)
+                throw new InvalidOperationException("Product not found, cannot remove items from stock for Product that does not exist.");
+
             product.ItemsInStock -= @event.ItemsInStock;
 
             repository.Edit(product);
