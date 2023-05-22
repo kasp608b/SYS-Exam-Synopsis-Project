@@ -1,5 +1,7 @@
-﻿using ProductApi.Data;
+﻿using Microsoft.Extensions.DependencyInjection;
+using ProductApi.Data;
 using ProductApi.Models;
+using SharedModels;
 using SharedModels.EventStoreCQRS;
 using SharedModels.ProductAPICommon.Events;
 
@@ -8,25 +10,25 @@ namespace ProductApiQ.EventHandlers
     public class ItemsRemovedFromStockEventHandler : IEventHandler<ItemsRemovedFromStock>
     {
 
-        private readonly IRepository<Product> repository;
-
-        public ItemsRemovedFromStockEventHandler(IRepository<Product> repos)
+        public Task HandleAsync(ItemsRemovedFromStock @event, IServiceProvider provider)
         {
-            repository = repos;
-        }
+            using (var scope = provider.CreateScope())
+            {
 
-        public Task HandleAsync(ItemsRemovedFromStock @event)
-        {
-            var product = repository.Get(@event.Id);
+                var services = scope.ServiceProvider;
+                var repository = services.GetService<IRepository<Product>>();
 
-            if (product == null)
-                throw new InvalidOperationException("Product not found, cannot remove items from stock for Product that does not exist.");
+                var product = repository.Get(@event.Id);
 
-            product.ItemsInStock -= @event.ItemsInStock;
+                if (product == null)
+                    throw new InvalidOperationException("Product not found, cannot remove items from stock for Product that does not exist.");
 
-            repository.Edit(product);
+                product.ItemsInStock -= @event.ItemsInStock;
 
-            return Task.CompletedTask;
+                repository.Edit(product);
+
+                return Task.CompletedTask;
+            }
         }
     }
 }

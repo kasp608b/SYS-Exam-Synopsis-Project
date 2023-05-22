@@ -1,5 +1,6 @@
 ﻿using ProductApi.Data;
 using ProductApi.Models;
+using SharedModels;
 using SharedModels.EventStoreCQRS;
 using SharedModels.ProductAPICommon.Events;
 
@@ -8,21 +9,23 @@ namespace ProductApiQ.EventHandlers
     public class ProductDeletedEventHandler : IEventHandler<ProductDeleted>
     {
 
-        private readonly IRepository<Product> repository;
+       
 
-        public ProductDeletedEventHandler(IRepository<Product> repos)
+        public Task HandleAsync(ProductDeleted @event, IServiceProvider provider)
         {
-            repository = repos;
-        }
+            using (var scope = provider.CreateScope())
+            {
 
-        public Task HandleAsync(ProductDeleted @event)
-        {
-            if (repository.Get(@event.Id) == null)
-                throw new InvalidOperationException("Product not found, cannot remove Product that does not exist.");
+                var services = scope.ServiceProvider;
+                var repository = services.GetService<IRepository<Product>>();
+                
+                if (repository.Get(@event.Id) == null)
+                    throw new InvalidOperationException("Product not found, cannot remove Product that does not exist.");
 
-            repository.Remove(@event.Id);
+                repository.Remove(@event.Id);
 
-            return Task.CompletedTask;
+                return Task.CompletedTask;
+            }
         }
     }
 }

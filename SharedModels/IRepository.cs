@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ProductApi.Data
+namespace SharedModels
 {
     public interface IRepository<T>
     {

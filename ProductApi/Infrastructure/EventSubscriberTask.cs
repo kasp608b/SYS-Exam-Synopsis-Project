@@ -1,7 +1,9 @@
 ﻿using Common.EventStoreCQRS;
 using EventStore.Client;
 using Newtonsoft.Json;
+using ProductApi.Models;
 using ProductApiQ.EventHandlers;
+using SharedModels;
 using SharedModels.EventStoreCQRS;
 using SharedModels.ProductAPICommon.Events;
 
@@ -22,6 +24,9 @@ namespace ProductApiQ.Infrastructure
             using (var scope = provider.CreateScope())
             {
                 var services = scope.ServiceProvider;
+
+                var productRepos = services.GetService<IRepository<Product>>();
+                
                 var eventStoreClient = services.GetService<EventStoreClient>();
 
                 var deserializer = services.GetService<EventDeserializer>();
@@ -56,43 +61,43 @@ namespace ProductApiQ.Infrastructure
                             switch (eventData)
                             {
                                 case ItemsAddedToStock itemsAddedToStock:
-                                    await itemsAddedToStockEventHandler.HandleAsync((ItemsAddedToStock)eventData);
+                                    await itemsAddedToStockEventHandler.HandleAsync((ItemsAddedToStock)eventData, provider);
                                     break;
 
                                 case ItemsRemovedFromStock itemsRemovedFromStock:
-                                    await itemsRemovedFromStockEventHandler.HandleAsync((ItemsRemovedFromStock)eventData);
+                                    await itemsRemovedFromStockEventHandler.HandleAsync((ItemsRemovedFromStock)eventData, provider);
                                     break;
 
                                 case ProductCategoryChanged productCategoryChanged:
-                                    await productCategoryChangedEventHandler.HandleAsync((ProductCategoryChanged)eventData);
+                                    await productCategoryChangedEventHandler.HandleAsync((ProductCategoryChanged)eventData, provider);
                                     break;
 
                                 case ProductCreated productCreated:
-                                    await productCreatedEventHandler.HandleAsync((ProductCreated)eventData);
+                                    await productCreatedEventHandler.HandleAsync((ProductCreated)eventData, provider);
                                     break;
 
                                 case ProductDeleted productDeleted:
-                                    await productDeletedEventHandler.HandleAsync((ProductDeleted)eventData);
+                                    await productDeletedEventHandler.HandleAsync((ProductDeleted)eventData, provider);
                                     break;
 
                                 case ProductNameChanged productNameChanged:
-                                    await productNameChangedEventHandler.HandleAsync((ProductNameChanged)eventData);
+                                    await productNameChangedEventHandler.HandleAsync((ProductNameChanged)eventData, provider);
                                     break;
 
                                 case ProductPriceChanged productPriceChanged:
-                                    await productPriceChangedEventHandler.HandleAsync((ProductPriceChanged)eventData);
+                                    await productPriceChangedEventHandler.HandleAsync((ProductPriceChanged)eventData, provider);
                                     break;
 
                                 case ProductShipped productShipped:
-                                    await productShippedEventHandler.HandleAsync((ProductShipped)eventData);
+                                    await productShippedEventHandler.HandleAsync((ProductShipped)eventData, provider);
                                     break;
 
                                 case ReservedItemsDecreased reservedItemsDecreased:
-                                    await reservedItemsDecreasedEventHandler.HandleAsync((ReservedItemsDecreased)eventData);
+                                    await reservedItemsDecreasedEventHandler.HandleAsync((ReservedItemsDecreased)eventData, provider);
                                     break;
 
                                 case ReservedItemsIncreased reservedItemsIncreased:
-                                    await reservedItemsIncreasedEventHandler.HandleAsync((ReservedItemsIncreased)eventData);
+                                    await reservedItemsIncreasedEventHandler.HandleAsync((ReservedItemsIncreased)eventData, provider);
                                     break;
 
                                 default:

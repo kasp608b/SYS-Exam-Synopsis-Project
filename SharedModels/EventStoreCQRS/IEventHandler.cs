@@ -8,7 +8,7 @@ namespace SharedModels.EventStoreCQRS
 {
     public interface IEventHandler<TEvent> where TEvent : IEvent
     {
-        Task HandleAsync(TEvent @event);
+        Task HandleAsync(TEvent @event, IServiceProvider provider);
     }
     
         

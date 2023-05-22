@@ -1,5 +1,6 @@
 ﻿using ProductApi.Data;
 using ProductApi.Models;
+using SharedModels;
 using SharedModels.EventStoreCQRS;
 using SharedModels.ProductAPICommon.Events;
 
@@ -8,25 +9,27 @@ namespace ProductApiQ.EventHandlers
     public class ProductCategoryChangedEventHandler : IEventHandler<ProductCategoryChanged>
     {
 
-        private readonly IRepository<Product> repository;
+       
 
-        public ProductCategoryChangedEventHandler(IRepository<Product> repos)
+        public Task HandleAsync(ProductCategoryChanged @event, IServiceProvider provider)
         {
-            repository = repos;
-        }
+            using (var scope = provider.CreateScope())
+            {
 
-        public Task HandleAsync(ProductCategoryChanged @event)
-        {
-            var product = repository.Get(@event.Id);
+                var services = scope.ServiceProvider;
+                var repository = services.GetService<IRepository<Product>>();
+                
+                var product = repository.Get(@event.Id);
 
-            if (product == null)
-                throw new InvalidOperationException("Product not found, cannot change category for Product that does not exist.");
+                if (product == null)
+                    throw new InvalidOperationException("Product not found, cannot change category for Product that does not exist.");
 
-            product.Category = @event.Category;
+                product.Category = @event.Category;
 
-            repository.Edit(product);
+                repository.Edit(product);
 
-            return Task.CompletedTask;
+                return Task.CompletedTask;
+            }
         }
     }
 }

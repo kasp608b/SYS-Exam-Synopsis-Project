@@ -1,5 +1,6 @@
 ﻿using ProductApi.Data;
 using ProductApi.Models;
+using SharedModels;
 using SharedModels.EventStoreCQRS;
 using SharedModels.ProductAPICommon.Events;
 
@@ -8,25 +9,26 @@ namespace ProductApiQ.EventHandlers
     public class ReservedItemsDecreasedEventHandler : IEventHandler<ReservedItemsDecreased>
     {
 
-        private readonly IRepository<Product> repository;
 
-        public ReservedItemsDecreasedEventHandler(IRepository<Product> repos)
+        public Task HandleAsync(ReservedItemsDecreased @event, IServiceProvider provider)
         {
-            repository = repos;
-        }
+            using (var scope = provider.CreateScope())
+            {
 
-        public Task HandleAsync(ReservedItemsDecreased @event)
-        {
-            var product = repository.Get(@event.Id);
+                var services = scope.ServiceProvider;
+                var repository = services.GetService<IRepository<Product>>();
+                
+                var product = repository.Get(@event.Id);
 
-            if (product == null)
-                throw new InvalidOperationException("Product not found, cannot decrease reserved items for Product that does not exist.");
+                if (product == null)
+                    throw new InvalidOperationException("Product not found, cannot decrease reserved items for Product that does not exist.");
 
-            product.ItemsReserved -= @event.ItemsReserved;
+                product.ItemsReserved -= @event.ItemsReserved;
 
-            repository.Edit(product);
+                repository.Edit(product);
 
-            return Task.CompletedTask;
+                return Task.CompletedTask;
+            }
         }
     }
 }
