@@ -1,5 +1,6 @@
 ﻿using Common.EventStoreCQRS;
 using EventStore.Client;
+using ProductAPIC.Aggregates;
 using ProductAPIC.Commands;
 using SharedModels.EventStoreCQRS;
 using SharedModels.ProductAPICommon.Events;
@@ -12,16 +13,27 @@ namespace ProductAPIC.CommandHandlers
 
         private readonly EventSerializer _eventSerializer;
 
+        private readonly EventDeserializer _eventDeserializer;
+
         private readonly CancellationToken _cancellationToken;
 
-        public CreateProductCommandHandler(EventStoreClient eventStore, EventSerializer eventSerializer)
+        public CreateProductCommandHandler(EventStoreClient eventStore, EventSerializer eventSerializer, EventDeserializer eventDeserializer)
         {
             _eventStore = eventStore;
             _eventSerializer = eventSerializer;
+            _eventDeserializer = eventDeserializer;
             _cancellationToken = new CancellationToken();
         }
-        public Task HandleAsync(CreateProduct command)
+        public async Task HandleAsync(CreateProduct command)
         {
+            //Check if the product already exists
+            ProductAggregate? product = await _eventStore.Find<ProductAggregate, Guid>(command.Id, _eventDeserializer,_cancellationToken);
+
+            if(product != null)
+            {
+                throw new InvalidOperationException($"The product with id:{product.Id} is allready created");
+            }
+
             var @event = new ProductCreated
             {
                 Id = command.Id,
@@ -33,7 +45,7 @@ namespace ProductAPIC.CommandHandlers
                 CreatedAt = DateTime.UtcNow
             };
 
-            return _eventStore.Append(@event, "Product", _eventSerializer, _cancellationToken);
+           await _eventStore.Append(@event, "Product", _eventSerializer, _cancellationToken);
         }
     }
 }
