@@ -4,6 +4,7 @@ using ProductApi.Data;
 using ProductApi.Infrastructure;
 using ProductApi.Models;
 using ProductApiQ.EventHandlers;
+using ProductApiQ.Infrastructure;
 using Prometheus;
 using SharedModels;
 using SharedModels.EventStoreCQRS;
@@ -78,6 +79,9 @@ Task.Factory.StartNew(() =>
     new MessageListener(app.Services, cloudAMQPConnectionString).StartAsync());
 //app.UseHttpsRedirection();
 
+Console.WriteLine("EventSubscriber connected to EventStoreDB");
+Task.Factory.StartNew(() =>
+    new EventSubscriberTask(app.Services).StartAsync());
 
 app.UseHttpMetrics();
 
