@@ -1,5 +1,6 @@
 ﻿using Common.EventStoreCQRS;
 using EventStore.Client;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,9 +26,26 @@ namespace SharedModels.EventStoreCQRS
 
             await foreach (var @event in readResult)
             {
-                var eventData = eventDeserializer.Deserialize(@event.Event.Data.ToArray());
+                try
+                {
+                    if (@event.Event.EventType.StartsWith("$") || @event.Event.EventType.StartsWith("_"))
+                    {
+                        continue; // skip system events
+                    }
 
-                aggregate.When(eventData!);
+                    var eventData = eventDeserializer.Deserialize(@event.Event.Data.ToArray());
+
+                    aggregate.When(eventData!);
+                }
+                catch (JsonSerializationException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+
+                }
             }
 
             return aggregate;
