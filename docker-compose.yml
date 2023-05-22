@@ -58,7 +58,10 @@ services:
     image: ${DOCKER_REGISTRY-}productapic
     build:
       context: .
-      dockerfile: ProductAPIC/Dockerfile  
+      dockerfile: ProductAPIC/Dockerfile
+    ports:
+      - 9010:80
+      - 9010:443
 
   customerapi:
     image: ${DOCKER_REGISTRY-}customerapi

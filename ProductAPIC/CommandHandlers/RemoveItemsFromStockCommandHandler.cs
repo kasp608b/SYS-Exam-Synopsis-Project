@@ -1,12 +1,12 @@
 ﻿using Common.EventStoreCQRS;
 using EventStore.Client;
-using ProductAPIC.Command;
+using ProductAPIC.Commands;
 using SharedModels.EventStoreCQRS;
 using SharedModels.ProductAPICommon.Events;
 
 namespace ProductAPIC.CommandHandlers
 {
-    public class IncreaseReservedItemsCommandHandler : ICommandHandler<IncreaseReservedItems>
+    public class RemoveItemsFromStockCommandHandler : ICommandHandler<RemoveItemsFromStock>
     {
         private readonly EventStoreClient _eventStore;
 
@@ -14,24 +14,24 @@ namespace ProductAPIC.CommandHandlers
 
         private readonly CancellationToken _cancellationToken;
 
-        public IncreaseReservedItemsCommandHandler(EventStoreClient eventStore, EventSerializer eventSerializer)
+        public RemoveItemsFromStockCommandHandler(EventStoreClient eventStore, EventSerializer eventSerializer)
         {
             _eventStore = eventStore;
             _eventSerializer = eventSerializer;
             _cancellationToken = new CancellationToken();
         }
 
-        public async Task HandleAsync(IncreaseReservedItems command)
+        public async Task HandleAsync(RemoveItemsFromStock command)
         {
-            var @event = new ReservedItemsIncreased
+            var @event = new ItemsRemovedFromStock
             {
                 Id = command.Id,
-                ItemsReserved = command.ItemsReserved,
-                IncreasedAt = DateTime.UtcNow
+                ItemsInStock = command.ItemsInStock,
+                RemovedAt = DateTime.UtcNow
             };
 
             await _eventStore.Append(@event, "Product", _eventSerializer, _cancellationToken);
-            
         }
     }
+    
 }
