@@ -1,11 +1,16 @@
+using Common.EventStoreCQRS;
 using Microsoft.EntityFrameworkCore;
 using ProductApi.Data;
 using ProductApi.Infrastructure;
 using ProductApi.Models;
+using ProductApiQ.EventHandlers;
 using Prometheus;
 using SharedModels;
+using SharedModels.EventStoreCQRS;
+using SharedModels.ProductAPICommon.Events;
 
-
+// EventStoreDB connection string.
+string gRpcConnectionString = "esdb://producteventstore.db:2113?tls=false";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +21,25 @@ string cloudAMQPConnectionString = "host=rabbitmq";
 // Add services to the container.
 
 builder.Services.AddDbContext<ProductApiContext>(opt => opt.UseInMemoryDatabase("ProductsDb"));
+
+// Add the eventstore client to the service container.
+builder.Services.AddEventStoreClient(gRpcConnectionString);
+
+builder.Services.AddScoped<EventSerializer>();
+
+builder.Services.AddScoped<EventDeserializer>();
+
+// Add all the event handlers to the service container
+builder.Services.AddScoped<IEventHandler<ItemsAddedToStock>, ItemsAddedToStockEventHandler>();
+builder.Services.AddScoped<IEventHandler<ItemsRemovedFromStock>, ItemsRemovedFromStockEventHandler>();
+builder.Services.AddScoped<IEventHandler<ProductCategoryChanged>, ProductCategoryChangedEventHandler>();
+builder.Services.AddScoped<IEventHandler<ProductCreated>, ProductCreatedEventHandler>();
+builder.Services.AddScoped<IEventHandler<ProductDeleted>, ProductDeletedEventHandler>();
+builder.Services.AddScoped<IEventHandler<ProductNameChanged>, ProductNameChangedEventHandler>();
+builder.Services.AddScoped<IEventHandler<ProductPriceChanged>, ProductPriceChangedEventHandler>();
+builder.Services.AddScoped<IEventHandler<ProductShipped>, ProductShippedEventHandler>();
+builder.Services.AddScoped<IEventHandler<ReservedItemsDecreased>, ReservedItemsDecreasedEventHandler>();
+builder.Services.AddScoped<IEventHandler<ReservedItemsIncreased>, ReservedItemsIncreasedEventHandler>();
 
 // Register repositories for dependency injection
 builder.Services.AddScoped<IRepository<Product>, ProductRepository>();
