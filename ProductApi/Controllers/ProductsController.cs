@@ -61,7 +61,7 @@ namespace ProductApi.Controllers
                 return StatusCode(500, "Something went wrong" + $"{ex.Message}");
             }
         }
-
+/*
         // POST products
         [HttpPost]
         public IActionResult Post([FromBody] ProductDto productDto)
@@ -85,6 +85,8 @@ namespace ProductApi.Controllers
             }
 
         }
+*/
+/*
 
         // PUT products/5
         [HttpPut("{id}")]
@@ -121,7 +123,8 @@ namespace ProductApi.Controllers
             }
 
         }
-
+*/
+/*
         // DELETE products/5
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
@@ -143,5 +146,6 @@ namespace ProductApi.Controllers
             }
 
         }
+*/
     }
 }
