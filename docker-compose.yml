@@ -20,7 +20,7 @@ services:
       timeout: 10s
       retries: 5
 
-  orderapi:
+  orderapiq:
     image: ${DOCKER_REGISTRY-}orderapi
     build:
       context: .

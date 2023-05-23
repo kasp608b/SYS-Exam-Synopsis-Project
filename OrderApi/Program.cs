@@ -11,7 +11,7 @@ using SharedModels.EventStoreCQRS;
 using SharedModels.OrderAPICommon.Events;
 
 // EventStoreDB connection string.
-string gRpcConnectionString = "esdb://producteventstore.db:2115?tls=false";
+string gRpcConnectionString = "esdb://ordereventstore.db:2115?tls=false";
 
 var builder = WebApplication.CreateBuilder(args);
 

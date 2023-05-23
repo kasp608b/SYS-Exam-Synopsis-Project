@@ -12,7 +12,7 @@ using SharedModels.EventStoreCQRS;
 
 
 // EventStoreDB connection string.
-string gRpcConnectionString = "esdb://producteventstore.db:2114?tls=false";
+string gRpcConnectionString = "esdb://customereventstore.db:2114?tls=false";
 
 var builder = WebApplication.CreateBuilder(args);
 
