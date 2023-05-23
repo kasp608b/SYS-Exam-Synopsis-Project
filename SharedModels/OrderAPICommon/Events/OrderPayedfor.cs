@@ -2,7 +2,7 @@
 
 namespace SharedModels.OrderAPICommon.Events
 {
-    internal class OrderPayedfor : IEvent
+    public class OrderPayedfor : IEvent
     {
         public Guid Id { get; set; }
 
