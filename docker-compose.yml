@@ -113,15 +113,66 @@ services:
       - "2113:2113"
     volumes:
       - type: volume
-        source: eventstore-volume-data
-        target: /var/lib/eventstore
+        source: producteventstore.db-volume-data
+        target: /var/lib/producteventstore.db
       - type: volume
-        source: eventstore-volume-logs
-        target: /var/log/eventstore
+        source: producteventstore.db-volume-logs
+        target: /var/log/producteventstore.db
+        
+  customereventstore.db:
+    image: eventstore/eventstore:20.10.2-buster-slim
+    environment:
+      - EVENTSTORE_CLUSTER_SIZE=1
+      - EVENTSTORE_RUN_PROJECTIONS=All
+      - EVENTSTORE_START_STANDARD_PROJECTIONS=true
+      - EVENTSTORE_EXT_TCP_PORT=1114
+      - EVENTSTORE_HTTP_PORT=2114
+      - EVENTSTORE_INSECURE=true
+      - EVENTSTORE_ENABLE_EXTERNAL_TCP=true
+      - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
+    ports:
+      - "1114:1114"
+      - "2114:2114"
+    volumes:
+      - type: volume
+        source: customereventstore.db-volume-data
+        target: /var/lib/producteventstore.db
+      - type: volume
+        source: customereventstore.db-volume-logs
+        target: /var/log/producteventstore.db 
+  
+  ordereventstore.db:
+    image: eventstore/eventstore:20.10.2-buster-slim
+    environment:
+      - EVENTSTORE_CLUSTER_SIZE=1
+      - EVENTSTORE_RUN_PROJECTIONS=All
+      - EVENTSTORE_START_STANDARD_PROJECTIONS=true
+      - EVENTSTORE_EXT_TCP_PORT=1115
+      - EVENTSTORE_HTTP_PORT=2115
+      - EVENTSTORE_INSECURE=true
+      - EVENTSTORE_ENABLE_EXTERNAL_TCP=true
+      - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
+    ports:
+      - "1115:1115"
+      - "2115:2115"
+    volumes:
+      - type: volume
+        source: ordereventstore.db-volume-data
+        target: /var/lib/producteventstore.db
+      - type: volume
+        source: ordereventstore.db-volume-logs
+        target: /var/log/producteventstore.db         
+        
 
 volumes:
-  eventstore-volume-data:
-  eventstore-volume-logs:
+  producteventstore.db-volume-data:
+  producteventstore.db-volume-logs:
+  customereventstore.db-volume-data:
+  customereventstore.db-volume-logs:
+  ordereventstore.db-volume-data:
+  ordereventstore.db-volume-logs:
+
+  
    
   
   #prometheus:
