@@ -43,7 +43,7 @@ namespace ProductAPIC.CommandHandlers
                 ChangedAt = DateTime.UtcNow
             };
 
-            await _eventStore.Append(@event, "Product", _eventSerializer, _cancellationToken);
+            await _eventStore.Append(@event, typeof(Product).Name, _eventSerializer, _cancellationToken);
         }
     }
 }
