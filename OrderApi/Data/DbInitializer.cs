@@ -20,7 +20,7 @@ namespace OrderApi.Data
             }
             var orderId = Guid.Parse("0d5909b4-e6ee-432f-8b2c-5823ef75d0a1");
 
-            var productId = Guid.Parse("c4e5ee96-faa4-4fd1-a2ff-801dc2722dc3");
+            var productId = Guid.Parse("1fa60396-6644-4f09-b5d1-2ebcdeca49b1");
 
             var customerId = Guid.Parse("2749cb35-1664-4c53-aa45-aff486bedf39");
 

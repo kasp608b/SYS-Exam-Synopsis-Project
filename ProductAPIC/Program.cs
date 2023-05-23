@@ -3,6 +3,7 @@ using EventStore.Client;
 using ProductAPIC.Command;
 using ProductAPIC.CommandHandlers;
 using ProductAPIC.Commands;
+using ProductAPIC.Infrastructure;
 using SharedModels.EventStoreCQRS;
 using SharedModels.ProductAPICommon.Events;
 
@@ -10,6 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Connect to EventStoreDB.
 string gRpcConnectionString = "esdb://producteventstore.db:2113?tls=false";
+
+
+string cloudAMQPConnectionString = "host=rabbitmq";
 
 // Add services to the container.
 builder.Services.AddEventStoreClient(gRpcConnectionString);
@@ -46,6 +50,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+
+// Create a message listener in a separate thread.
+Console.WriteLine("Started listening program wow this should work");
+Task.Factory.StartNew(() =>
+    new MessageListener(app.Services, cloudAMQPConnectionString).StartAsync());
 
 app.UseAuthorization();
 
