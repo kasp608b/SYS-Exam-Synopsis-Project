@@ -1,10 +1,17 @@
+using Common.EventStoreCQRS;
 using Microsoft.EntityFrameworkCore;
 using OrderApi.Data;
 using OrderApi.Infrastructure;
 using OrderApi.Models;
+using OrderApiQ.EventHandlers;
+using OrderApiQ.Infrastructure;
 using Prometheus;
 using SharedModels;
+using SharedModels.EventStoreCQRS;
+using SharedModels.OrderAPICommon.Events;
 
+// EventStoreDB connection string.
+string gRpcConnectionString = "esdb://ordereventstore.db:2115?tls=false";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +36,23 @@ string cloudAMQPConnectionString = "host=rabbitmq";
 // Add services to the container.
 
 builder.Services.AddDbContext<OrderApiContext>(opt => opt.UseInMemoryDatabase("OrdersDb"));
+
+// Add the eventstore client to the service container.
+builder.Services.AddEventStoreClient(gRpcConnectionString);
+
+builder.Services.AddScoped<EventSerializer>();
+
+builder.Services.AddScoped<EventDeserializer>();
+
+// Add all the event handlers to the service container
+builder.Services.AddScoped<IEventHandler<OrderCanceled>, OrderCanceledEventHandler>();
+builder.Services.AddScoped<IEventHandler<OrderCompleted>, OrderCompletedEventHandler>();
+builder.Services.AddScoped<IEventHandler<OrderCreated>, OrderCreatedEventHandler>();
+builder.Services.AddScoped<IEventHandler<OrderDeleted>, OrderDeletedEventHandler>();
+builder.Services.AddScoped<IEventHandler<OrderPayedfor>, OrderPayedforEventHandler>();
+builder.Services.AddScoped<IEventHandler<OrderShipped>, OrderShippedEventHandler>();
+
+
 
 // Register repositories for dependency injection
 builder.Services.AddScoped<IRepository<Order>, OrderRepository>();
@@ -73,6 +97,10 @@ using (var scope = app.Services.CreateScope())
     var dbInitializer = services.GetService<IDbInitializer>();
     dbInitializer.Initialize(dbContext);
 }
+
+Console.WriteLine("EventSubscriber connected to EventStoreDB");
+Task.Factory.StartNew(() =>
+    new EventSubscriberTask(app.Services).StartAsync());
 
 //app.UseHttpsRedirection();
 

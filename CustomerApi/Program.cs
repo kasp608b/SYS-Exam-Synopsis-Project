@@ -1,9 +1,18 @@
+using Common.EventStoreCQRS;
 using CustomerApi.Data;
 using CustomerApi.Infrastructure;
 using CustomerApi.Models;
+using CustomerApiQ.EventHandlers;
+using CustomerApiQ.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Prometheus;
 using SharedModels;
+using SharedModels.CustomerAPICommon.Events;
+using SharedModels.EventStoreCQRS;
+
+
+// EventStoreDB connection string.
+string gRpcConnectionString = "esdb://customereventstore.db:2114?tls=false";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +30,19 @@ string cloudAMQPConnectionString = "host=rabbitmq";
 // Add services to the container.
 
 builder.Services.AddDbContext<CustomerApiContext>(opt => opt.UseInMemoryDatabase("CustomersDb"));
+
+// Add the eventstore client to the service container.
+builder.Services.AddEventStoreClient(gRpcConnectionString);
+
+builder.Services.AddScoped<EventSerializer>();
+
+builder.Services.AddScoped<EventDeserializer>();
+
+// Add all the event handlers to the service container
+builder.Services.AddScoped<IEventHandler<CustomerCreated>, CustomerCreatedEventHandler>();
+builder.Services.AddScoped<IEventHandler<CustomerDeleted>, CustomerDeletedEventHandler>();
+builder.Services.AddScoped<IEventHandler<CustomerCreditStandingChanged>, CustomerCreditStandingChangedEventHandler>();
+builder.Services.AddScoped<IEventHandler<CustomerInfoChanged>, CustomerInfoChangedEventHandler>();
 
 // Register repositories for dependenct injection
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
@@ -70,6 +92,11 @@ using (var scope = app.Services.CreateScope())
 Console.WriteLine("Started listening program version after pushv3");
 Task.Factory.StartNew(() =>
     new MessageListener(app.Services, cloudAMQPConnectionString).Start());
+
+Console.WriteLine("EventSubscriber connected to EventStoreDB");
+Task.Factory.StartNew(() =>
+    new EventSubscriberTask(app.Services).StartAsync());
+
 //app.UseHttpsRedirection();
 
 //app.UseHttpsRedirection();
