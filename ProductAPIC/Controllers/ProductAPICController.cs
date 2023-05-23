@@ -1,15 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ProductAPIC.Command;
-using ProductAPIC.CommandHandlers;
 using ProductAPIC.Commands;
 using SharedModels.EventStoreCQRS;
 
 namespace ProductAPIC.Controllers
 {
-    [Route("api/ProductAPIC")]
+    [Route("api/ProductApiC")]
     [ApiController]
-    public class ProductAPICController : ControllerBase
+    public class ProductApiCController : ControllerBase
     {
         ICommandHandler<AddItemsToStock> _addItemsToStockCommandHandler;
         ICommandHandler<ChangeProductCategory> _changeProductCategoryCommandHandler;
@@ -21,8 +19,8 @@ namespace ProductAPIC.Controllers
         ICommandHandler<DeleteProduct> _deleteProductCommandHandler;
         ICommandHandler<IncreaseReservedItems> _increaseReservedItemsCommandHandler;
         ICommandHandler<RemoveItemsFromStock> _removeItemsFromStockCommandHandler;
-        
-        public ProductAPICController(
+
+        public ProductApiCController(
             ICommandHandler<AddItemsToStock> addItemsToStockCommandHandler,
             ICommandHandler<ChangeProductCategory> changeProductCategoryCommandHandler,
             ICommandHandler<ShipProduct> shipProductCommandHandler,
@@ -58,11 +56,11 @@ namespace ProductAPIC.Controllers
                 {
                     command.Id = Guid.NewGuid();
                 }
-                
+
                 await _createProductCommandHandler.HandleAsync(command);
                 return Ok();
             }
-            catch (InvalidOperationException ex) 
+            catch (InvalidOperationException ex)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
             }
