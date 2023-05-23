@@ -29,3 +29,10 @@ services:
     ports:
       - "80"
 
+
+  customerapic:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+

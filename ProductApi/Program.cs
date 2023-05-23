@@ -1,7 +1,6 @@
 using Common.EventStoreCQRS;
 using Microsoft.EntityFrameworkCore;
 using ProductApi.Data;
-using ProductApi.Infrastructure;
 using ProductApi.Models;
 using ProductApiQ.EventHandlers;
 using ProductApiQ.Infrastructure;

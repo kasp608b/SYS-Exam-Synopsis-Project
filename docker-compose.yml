@@ -69,8 +69,23 @@ services:
         - rabbitmq
     ports:
       - 9006:80
-      - 9007:443
 
+  customerapic:
+    image: ${DOCKER_REGISTRY-}customerapic
+    build:
+      context: .
+      dockerfile: CustomerApiC/Dockerfile
+    environment:
+      - HOSTNAMERABBIT=rabbitmq
+    restart: on-failure 
+    depends_on:
+       rabbitmq:
+        condition: service_healthy
+    links: 
+        - rabbitmq  
+    ports:
+      - 9007:80   
+      
   customerapiq:
     image: ${DOCKER_REGISTRY-}customerapi
     build:
@@ -164,6 +179,8 @@ services:
         target: /var/log/producteventstore.db         
         
 
+ 
+
 volumes:
   producteventstore.db-volume-data:
   producteventstore.db-volume-logs:
@@ -186,5 +203,6 @@ volumes:
   #  image: grafana/grafana
   #  ports:
   #    - "3000:3000"
+
 
 

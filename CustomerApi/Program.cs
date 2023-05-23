@@ -20,7 +20,7 @@ var builder = WebApplication.CreateBuilder(args);
 // The product service (running as a container) listens on this URL for HTTP requests
 // from other services specified in the docker compose file (which in this solution is
 // the order service).
-string productServiceBaseUrl = "http://productapi/products/";
+string productServiceBaseUrl = "http://productapiq/products/";
 
 
 // RabbitMQ connection string (I use CloudAMQP as a RabbitMQ server).

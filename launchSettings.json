@@ -9,7 +9,8 @@
         "orderapi": "StartDebugging",
         "productapi": "StartDebugging",
         "productapic": "StartDebugging",
-        "rabbitmq": "StartWithoutDebugging"
+        "rabbitmq": "StartWithoutDebugging",
+        "customerapic": "StartDebugging"
       }
     }
   }
