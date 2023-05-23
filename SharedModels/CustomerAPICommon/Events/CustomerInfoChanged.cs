@@ -18,8 +18,6 @@ namespace SharedModels.CustomerAPICommon.Events
 
         public string ShippingAddress { get; set; }
 
-        public bool CreditStanding { get; set; }
-
-        public DateTime CreatedAt { get; set; }
+        public DateTime UpdateAt { get; set; }
     }
 }
