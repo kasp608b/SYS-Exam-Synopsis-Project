@@ -1,12 +1,11 @@
 ﻿using Common.EventStoreCQRS;
-using CustomerApi.Models;
 using EventStore.Client;
 using Newtonsoft.Json;
 using SharedModels;
-using SharedModels.CustomerAPICommon.Events;
 using SharedModels.EventStoreCQRS;
+using SharedModels.OrderAPICommon.Events;
 
-namespace CustomerApiQ.Infrastructure
+namespace OrderApiQ.Infrastructure
 {
     public class EventSubscriberTask
     {
@@ -24,16 +23,18 @@ namespace CustomerApiQ.Infrastructure
             {
                 var services = scope.ServiceProvider;
 
-                var customerRepos = services.GetService<IRepository<Customer>>();
+                var ordertRepos = services.GetService<IRepository<Order>>();
 
                 var eventStoreClient = services.GetService<EventStoreClient>();
 
                 var deserializer = services.GetService<EventDeserializer>();
 
-                var customerCreatedEventHandler = services.GetService<IEventHandler<CustomerCreated>>();
-                var customerCreditStandingChangedEventHandler = services.GetService<IEventHandler<CustomerCreditStandingChanged>>();
-                var customerDeletedEventHandler = services.GetService<IEventHandler<CustomerDeleted>>();
-                var customerInfoChangedEventHandler = services.GetService<IEventHandler<CustomerInfoChanged>>();
+                var orderCreatedEventHandler = services.GetService<IEventHandler<OrderCreated>>();
+                var orderCompletedEventHandler = services.GetService<IEventHandler<OrderCompleted>>();
+                var orderPayedforEventHandler = services.GetService<IEventHandler<OrderPayedfor>>();
+                var orderShippedEventHandler = services.GetService<IEventHandler<OrderShipped>>();
+                var orderCanceledEventHandler = services.GetService<IEventHandler<OrderCanceled>>();
+                var orderDeletedEventHandler = services.GetService<IEventHandler<OrderDeleted>>();
 
                 await eventStoreClient.SubscribeToAllAsync(
                 FromAll.Start,
@@ -45,7 +46,7 @@ namespace CustomerApiQ.Infrastructure
                         return; // skip system events
                     }
 
-                    if (@event.OriginalStreamId.StartsWith("Customer-"))
+                    if (@event.OriginalStreamId.StartsWith("Order-"))
                     {
                         try
                         {
@@ -53,20 +54,28 @@ namespace CustomerApiQ.Infrastructure
 
                             switch (eventData)
                             {
-                                case CustomerCreated customerCreated:
-                                    await customerCreatedEventHandler.HandleAsync((CustomerCreated)eventData, provider);
+                                case OrderCreated orderCreated:
+                                    await orderCreatedEventHandler.HandleAsync((OrderCreated)eventData, provider);
                                     break;
 
-                                case CustomerCreditStandingChanged customerCreditStandingChanged:
-                                    await customerCreditStandingChangedEventHandler.HandleAsync((CustomerCreditStandingChanged)eventData, provider);
+                                case OrderCompleted orderCompleted:
+                                    await orderCompletedEventHandler.HandleAsync((OrderCompleted)eventData, provider);
                                     break;
 
-                                case CustomerDeleted customerDeleted:
-                                    await customerDeletedEventHandler.HandleAsync((CustomerDeleted)eventData, provider);
+                                case OrderPayedfor orderPayedfor:
+                                    await orderPayedforEventHandler.HandleAsync((OrderPayedfor)eventData, provider);
                                     break;
 
-                                case CustomerInfoChanged customerInfoChanged:
-                                    await customerInfoChangedEventHandler.HandleAsync((CustomerInfoChanged)eventData, provider);
+                                case OrderShipped orderShipped:
+                                    await orderShippedEventHandler.HandleAsync((OrderShipped)eventData, provider);
+                                    break;
+
+                                case OrderCanceled orderCanceled:
+                                    await orderCanceledEventHandler.HandleAsync((OrderCanceled)eventData, provider);
+                                    break;
+
+                                case OrderDeleted orderDeleted:
+                                    await orderDeletedEventHandler.HandleAsync((OrderDeleted)eventData, provider);
                                     break;
 
                                 default:
