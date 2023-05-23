@@ -7,17 +7,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["OrderApi/OrderApiQ.csproj", "OrderApi/"]
-COPY ["SharedModels/SharedModels.csproj", "SharedModels/"]
-RUN dotnet restore "OrderApi/OrderApiQ.csproj"
+COPY ["OrderApi/OrderApi.csproj", "OrderApi/"]
+RUN dotnet restore "OrderApi/OrderApi.csproj"
 COPY . .
 WORKDIR "/src/OrderApi"
-RUN dotnet build "OrderApiQ.csproj" -c Release -o /app/build
+RUN dotnet build "OrderApi.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "OrderApiQ.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "OrderApi.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "OrderApiQ.dll"]
+ENTRYPOINT ["dotnet", "OrderApi.dll"]
