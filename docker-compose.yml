@@ -71,7 +71,7 @@ services:
       - 9006:80
       - 9007:443
 
-  customerapi:
+  customerapiq:
     image: ${DOCKER_REGISTRY-}customerapi
     build:
       context: .
