@@ -29,7 +29,7 @@ namespace ProductAPIC.CommandHandlers
         public async Task HandleAsync(DeleteProduct command)
         {
             //Check if the product already exists
-            ProductAggregate? product = await _eventStore.Find<ProductAggregate, Guid>(command.Id, _eventDeserializer, _cancellationToken);
+            Product? product = await _eventStore.Find<Product, Guid>(command.Id, _eventDeserializer, _cancellationToken);
 
             if (product == null)
             {

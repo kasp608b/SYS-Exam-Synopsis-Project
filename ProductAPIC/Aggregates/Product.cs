@@ -3,7 +3,7 @@ using SharedModels.ProductAPICommon.Events;
 
 namespace ProductAPIC.Aggregates
 {
-    public class ProductAggregate : Aggregate<Guid>
+    public class Product : Aggregate<Guid>
     {
         public Guid ProductId { get; set; }
         public string Name { get; set; }
