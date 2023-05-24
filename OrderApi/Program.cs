@@ -1,10 +1,10 @@
 using Common.EventStoreCQRS;
 using Microsoft.EntityFrameworkCore;
-using OrderApi.Data;
-using OrderApi.Infrastructure;
-using OrderApi.Models;
+using OrderApiQ;
+using OrderApiQ.Data;
 using OrderApiQ.EventHandlers;
 using OrderApiQ.Infrastructure;
+using OrderApiQ.Models.Converters;
 using Prometheus;
 using SharedModels;
 using SharedModels.EventStoreCQRS;
@@ -20,9 +20,9 @@ var builder = WebApplication.CreateBuilder(args);
 // The product service (running as a container) listens on this URL for HTTP requests
 // from other services specified in the docker compose file (which in this solution is
 // the order service).
-string productServiceBaseUrl = "http://productapi/products/";
+string productServiceBaseUrl = "http://productapiq/products/";
 
-string customerServiceBaseUrl = "http://customerapi/Customers/";
+string customerServiceBaseUrl = "http://customerapiq/Customers/";
 
 
 // RabbitMQ connection string (I use CloudAMQP as a RabbitMQ server).
@@ -62,18 +62,6 @@ builder.Services.AddTransient<IDbInitializer, DbInitializer>();
 
 // Register OrderConverter for dependency injection
 builder.Services.AddSingleton<IConverter<Order, OrderDto>, OrderConverter>();
-
-
-// Register product service gateway for dependency injection
-builder.Services.AddSingleton<IServiceGateway<ProductDto>>(new
-    ProductServiceGateway(productServiceBaseUrl));
-
-builder.Services.AddSingleton<IServiceGateway<CustomerDto>>(new CustomerServiceGateway(customerServiceBaseUrl));
-
-
-// Register MessagePublisher (a messaging gateway) for dependency injection
-builder.Services.AddSingleton<IMessagePublisher>(new
-    MessagePublisher(cloudAMQPConnectionString));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

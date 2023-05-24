@@ -1,7 +1,7 @@
 ﻿using RestSharp;
 using SharedModels;
 
-namespace OrderApi.Infrastructure
+namespace OrderApiC.Infrastructure
 {
     public class CustomerServiceGateway : IServiceGateway<CustomerDto>
     {
@@ -14,7 +14,7 @@ namespace OrderApi.Infrastructure
 
         public CustomerDto Get(Guid id)
         {
-            
+
             RestClient c = new RestClient(customerServiceBaseUrl);
 
             var request = new RestRequest(id.ToString());
@@ -23,6 +23,6 @@ namespace OrderApi.Infrastructure
             return response.Result;
         }
     }
-    
-    
+
+
 }

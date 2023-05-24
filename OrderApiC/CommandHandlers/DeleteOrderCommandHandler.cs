@@ -28,7 +28,7 @@ namespace OrderApiC.CommandHandlers
         public async Task HandleAsync(DeleteOrder command)
         {
             //Check if the order already exists
-            Order? order = await _eventStore.Find<Order, Guid>(command.Id, _eventDeserializer, _cancellationToken);
+            OrderAggregate? order = await _eventStore.Find<OrderAggregate, Guid>(command.Id, _eventDeserializer, _cancellationToken);
 
             if (order == null)
             {
@@ -41,7 +41,7 @@ namespace OrderApiC.CommandHandlers
                 DeletedAt = DateTime.UtcNow
             };
 
-            await _eventStore.Append(@event, typeof(Order).Name, _eventSerializer, _cancellationToken);
+            await _eventStore.Append(@event, typeof(OrderAggregate).Name, _eventSerializer, _cancellationToken);
         }
     }
 }

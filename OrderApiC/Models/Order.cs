@@ -1,4 +1,4 @@
-﻿namespace OrderApiQ
+﻿namespace OrderApiC
 {
     public class Order
     {

@@ -1,4 +1,4 @@
-﻿using OrderApi.Data;
+﻿using OrderApiQ.Data;
 using SharedModels.EventStoreCQRS;
 using SharedModels.OrderAPICommon.Events;
 

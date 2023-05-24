@@ -2,8 +2,9 @@
 using EventStore.Client;
 using OrderApiC.Aggregates;
 using OrderApiC.Commands;
+using OrderApiC.Infrastructure;
+using OrderApiC.Models.Converters;
 using SharedModels.EventStoreCQRS;
-using SharedModels.OrderAPICommon.Converters;
 using SharedModels.OrderAPICommon.Events;
 
 namespace OrderApiC.CommandHandlers
@@ -18,22 +19,31 @@ namespace OrderApiC.CommandHandlers
 
         private readonly CancellationToken _cancellationToken;
 
-        public ShipOrderCommandHandler(EventStoreClient eventStore, EventSerializer eventSerializer, EventDeserializer eventDeserializer)
+        private readonly IMessagePublisher _messagePublisher;
+
+        public ShipOrderCommandHandler(EventStoreClient eventStore, EventSerializer eventSerializer, EventDeserializer eventDeserializer, IMessagePublisher messagePublisher, CancellationToken cancellationToken)
         {
             _eventStore = eventStore;
             _eventSerializer = eventSerializer;
             _eventDeserializer = eventDeserializer;
-            _cancellationToken = new CancellationToken();
+            _messagePublisher = messagePublisher;
+            _cancellationToken = cancellationToken;
         }
 
         public async Task HandleAsync(ShipOrder command)
         {
             //Check if the order already exists
-            Order? order = await _eventStore.Find<Order, Guid>(command.Id, _eventDeserializer, _cancellationToken);
+            OrderAggregate? order = await _eventStore.Find<OrderAggregate, Guid>(command.Id, _eventDeserializer, _cancellationToken);
 
             if (order == null)
             {
                 throw new InvalidOperationException($"The order with id:{command.Id} does not exist yet and therfore can not be shipped");
+            }
+
+            //Check if the order is already shipped
+            if (order.Status == OrderStatus.shipped)
+            {
+                throw new InvalidOperationException($"The order with id:{command.Id} is already shipped");
             }
 
             var @event = new OrderShipped
@@ -43,6 +53,10 @@ namespace OrderApiC.CommandHandlers
             };
 
             await _eventStore.Append(@event, typeof(Order).Name, _eventSerializer, _cancellationToken);
+
+            _messagePublisher.PublishOrderStatusChangedMessage(
+                   command.Id, order.Orderlines.Select(x => new OrderlineConverter().Convert(x)).ToList(), "shipped");
+
         }
     }
 }

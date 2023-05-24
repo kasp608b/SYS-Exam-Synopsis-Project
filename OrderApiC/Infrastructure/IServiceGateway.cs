@@ -1,4 +1,4 @@
-﻿namespace OrderApi.Infrastructure
+﻿namespace OrderApiC.Infrastructure
 {
     public interface IServiceGateway<T>
     {

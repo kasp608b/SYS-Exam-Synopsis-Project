@@ -1,4 +1,4 @@
-﻿namespace SharedModels
+﻿namespace OrderApiC
 {
     public class OrderLine
     {

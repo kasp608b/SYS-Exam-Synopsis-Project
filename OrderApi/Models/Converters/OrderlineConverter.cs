@@ -1,4 +1,6 @@
-﻿namespace SharedModels.OrderAPICommon.Converters
+﻿using SharedModels;
+
+namespace OrderApiQ.Models.Converters
 {
     public class OrderlineConverter : IConverter<OrderLine, OrderLineDto>
     {

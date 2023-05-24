@@ -2,8 +2,8 @@
 using EventStore.Client;
 using OrderApiC.Aggregates;
 using OrderApiC.Commands;
+using OrderApiC.Models.Converters;
 using SharedModels.EventStoreCQRS;
-using SharedModels.OrderAPICommon.Converters;
 using SharedModels.OrderAPICommon.Events;
 
 namespace OrderApiC.CommandHandlers
@@ -29,7 +29,7 @@ namespace OrderApiC.CommandHandlers
         public async Task HandleAsync(CompleteOrder command)
         {
             //Check if the order already exists
-            Order? order = await _eventStore.Find<Order, Guid>(command.Id, _eventDeserializer, _cancellationToken);
+            OrderAggregate? order = await _eventStore.Find<OrderAggregate, Guid>(command.Id, _eventDeserializer, _cancellationToken);
 
             if (order == null)
             {

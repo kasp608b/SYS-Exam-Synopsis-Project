@@ -1,4 +1,4 @@
-﻿namespace SharedModels.OrderAPICommon.Converters
+﻿namespace OrderApiQ.Models.Converters
 {
     public interface IConverter<T, U>
     {

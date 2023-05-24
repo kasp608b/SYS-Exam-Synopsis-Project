@@ -1,4 +1,4 @@
-﻿namespace SharedModels
+﻿namespace OrderApiQ
 {
     public enum OrderStatus
     {
