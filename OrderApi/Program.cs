@@ -15,16 +15,6 @@ string gRpcConnectionString = "esdb://ordereventstore.db:2115?tls=false";
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-// Base URL for the product service when the solution is executed using docker-compose.
-// The product service (running as a container) listens on this URL for HTTP requests
-// from other services specified in the docker compose file (which in this solution is
-// the order service).
-string productServiceBaseUrl = "http://productapiq/ProductApiQ/";
-
-string customerServiceBaseUrl = "http://customerapic/CustomerApiC/";
-
-
 // RabbitMQ connection string (I use CloudAMQP as a RabbitMQ server).
 // Remember to replace this connectionstring with your own.
 string cloudAMQPConnectionString = "host=rabbitmq";
