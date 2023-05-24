@@ -27,11 +27,11 @@ namespace ProductAPIC.CommandHandlers
         public async Task HandleAsync(CreateProduct command)
         {
             //Check if the product already exists
-            Product? product = await _eventStore.Find<Product, Guid>(command.Id, _eventDeserializer,_cancellationToken);
+            Product? product = await _eventStore.Find<Product, Guid>(command.Id, _eventDeserializer, _cancellationToken);
 
-            if(product != null)
+            if (product != null)
             {
-                throw new InvalidOperationException($"The product with id:{product.Id} is allready created");
+                throw new InvalidOperationException($"The product with id:{product.Id} is already created");
             }
 
             var @event = new ProductCreated
@@ -45,7 +45,7 @@ namespace ProductAPIC.CommandHandlers
                 CreatedAt = DateTime.UtcNow
             };
 
-           await _eventStore.Append(@event, typeof(Product).Name, _eventSerializer, _cancellationToken);
+            await _eventStore.Append(@event, typeof(Product).Name, _eventSerializer, _cancellationToken);
         }
     }
 }
