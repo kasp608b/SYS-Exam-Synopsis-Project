@@ -18,6 +18,6 @@ namespace SharedModels.CustomerAPICommon.Events
 
         public string ShippingAddress { get; set; }
 
-        public DateTime UpdateAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }
