@@ -1,6 +1,5 @@
 ﻿using SharedModels.CustomerAPICommon.Events;
 using SharedModels.EventStoreCQRS;
-using SharedModels.ProductAPICommon.Events;
 
 namespace CustomerApiC.Aggregates
 {
@@ -40,7 +39,8 @@ namespace CustomerApiC.Aggregates
                 case CustomerDeleted customerDeleted:
                     Apply(customerDeleted);
                     break;
-                
+                default:
+                    throw new InvalidOperationException($"Unknown event type: {@event.GetType().Name}");
 
             }
 
@@ -80,10 +80,10 @@ namespace CustomerApiC.Aggregates
         private void Apply(CustomerDeleted @event)
         {
             Deleted = true;
-        
+
         }
 
-        
+
 
 
 
