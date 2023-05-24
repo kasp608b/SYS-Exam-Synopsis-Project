@@ -52,7 +52,7 @@ namespace OrderApiC.Aggregates
             CustomerId = @event.CustomerId;
             Date = @event.Date;
             Status = new OrderStatusConverter().Convert(@event.Status);
-            Orderlines = @event.Orderlines.Select(x => new OrderlineConverter().Convert(x)).ToList(;
+            Orderlines = @event.Orderlines.Select(x => new OrderlineConverter().Convert(x)).ToList();
 
         }
 
