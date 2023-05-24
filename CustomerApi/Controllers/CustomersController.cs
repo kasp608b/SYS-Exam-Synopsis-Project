@@ -6,7 +6,7 @@ using SharedModels;
 namespace CustomerApi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("CustomerApiC")]
     public class CustomersController : ControllerBase
     {
         private readonly ICustomerRepository repository;

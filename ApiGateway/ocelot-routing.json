@@ -1,33 +1,89 @@
 ﻿{
   "Routes": [
 
+    // ProductApi routes
     {
-      // ProductApi routes
-      "DownstreamPathTemplate": "/{catchAll}",
+
+      // ProductApiQ routes
+      "DownstreamPathTemplate": "/ProductApiQ/{catchAll}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "productapi",
+          "Host": "productapiq",
           "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/productapi/{catchAll}",
       "UpstreamHttpMethod": [ "Get" ]
     },
-
     {
-      // OrderApi routes
-      "DownstreamPathTemplate": "/{catchAll}",
+      // ProductApiC routes
+      "DownstreamPathTemplate": "/ProductApiC/{catchAll}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "orderapi",
+          "Host": "productapic",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/productapi/{catchAll}",
+      "UpstreamHttpMethod": [ "Post", "Put", "Delete" ]
+    },
+    // OrderApi routes
+    {
+      // OrderApiQ routes
+      "DownstreamPathTemplate": "/OrderApiQ/{catchAll}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "orderapiq",
           "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/orderapi/{catchAll}",
-      "UpstreamHttpMethod": [ "Get", "Post" ]
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      // OrderApiQ routes
+      "DownstreamPathTemplate": "/OrderApiC/{catchAll}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "orderapic",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/orderapi/{catchAll}",
+      "UpstreamHttpMethod": [ "Post", "Put", "Delete" ]
+    },
+    // CustomerApi routes
+    {
+      // CustomerApiQ routes
+      "DownstreamPathTemplate": "/CustomerApiQ/{catchAll}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "customerapiq",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/orderapi/{catchAll}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      // CustomerApiC routes
+      "DownstreamPathTemplate": "/CustomerApiC/{catchAll}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "customerapic",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/orderapi/{catchAll}",
+      "UpstreamHttpMethod": [ "Post", "Put", "Delete" ]
     }
+
   ],
   // Global configuration
   "GlobalConfiguration": {

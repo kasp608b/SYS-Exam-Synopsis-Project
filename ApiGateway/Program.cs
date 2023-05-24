@@ -4,7 +4,7 @@ using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddJsonFile("ocelot-aggregation.json");
+builder.Configuration.AddJsonFile("ocelot-routing");
 
 builder.Services.AddOcelot();
 
