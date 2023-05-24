@@ -1,4 +1,5 @@
-﻿using CustomerApi.Models;
+﻿using CustomerApi.Data;
+using CustomerApi.Models;
 using SharedModels;
 using SharedModels.CustomerAPICommon.Events;
 using SharedModels.EventStoreCQRS;
@@ -13,7 +14,7 @@ namespace CustomerApiQ.EventHandlers
             {
 
                 var services = scope.ServiceProvider;
-                var repository = services.GetService<IRepository<Customer>>();
+                var repository = services.GetService<ICustomerRepository>();
 
                 var customer = repository.Get(@event.Id);
 
