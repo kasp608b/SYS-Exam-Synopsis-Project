@@ -70,7 +70,7 @@ namespace ProductAPIC.Infrastructure
 
         }
 
-        private void HandleOrderShipped(OrderStatusChangedMessage message)
+        private async void HandleOrderShipped(OrderStatusChangedMessage message)
         {
             Console.WriteLine("Handle order shipped called");
             using (var scope = provider.CreateScope())
@@ -83,12 +83,12 @@ namespace ProductAPIC.Infrastructure
 
                 foreach (var orderLine in message.OrderLines)
                 {
-                    ShipProductCommandHandler.HandleAsync(new ShipProduct {Id = orderLine.ProductId, AmountShipped = orderLine.NoOfItems });
+                    await ShipProductCommandHandler.HandleAsync(new ShipProduct {Id = orderLine.ProductId, AmountShipped = orderLine.NoOfItems });
                 }
             }
         }
 
-        private void HandleOrderCancelled(OrderStatusChangedMessage message)
+        private async void HandleOrderCancelled(OrderStatusChangedMessage message)
         {
             Console.WriteLine("Handle order cancelled called");
             using (var scope = provider.CreateScope())
@@ -102,14 +102,14 @@ namespace ProductAPIC.Infrastructure
 
                 foreach (var orderLine in message.OrderLines)
                 {
-                    decreaseReservedItemsCommandHandler.HandleAsync(new DecreaseReservedItems { Id = orderLine.ProductId, ItemsReserved = orderLine.NoOfItems });
+                  await decreaseReservedItemsCommandHandler.HandleAsync(new DecreaseReservedItems { Id = orderLine.ProductId, ItemsReserved = orderLine.NoOfItems });
                 
                 }
             }
 
         }
 
-        private void HandleOrderCompleted(OrderStatusChangedMessage message)
+        private async void HandleOrderCompleted(OrderStatusChangedMessage message)
         {
             Console.WriteLine("Handle order completed called");
             // A service scope is created to get an instance of the product repository.
@@ -125,7 +125,7 @@ namespace ProductAPIC.Infrastructure
                 foreach (var orderLine in message.OrderLines)
                 {
 
-                    increaseReservedItemsCommandHandler.HandleAsync(new IncreaseReservedItems { Id = orderLine.ProductId, ItemsReserved = orderLine.NoOfItems });
+                  await increaseReservedItemsCommandHandler.HandleAsync(new IncreaseReservedItems { Id = orderLine.ProductId, ItemsReserved = orderLine.NoOfItems });
 
                 
                 }

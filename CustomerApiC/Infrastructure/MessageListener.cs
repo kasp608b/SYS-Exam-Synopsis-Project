@@ -189,7 +189,7 @@ namespace CustomerApi.Infrastructure
             }
         }
 
-        private void HandleCreditStandingChanged(CreditStandingChangedMessage message)
+        private async void HandleCreditStandingChanged(CreditStandingChangedMessage message)
         {
             Console.WriteLine("Handle credit status changed called");
             using (var scope = provider.CreateScope())
@@ -205,7 +205,7 @@ namespace CustomerApi.Infrastructure
                 if (ChangeCustomerCreditStandingCommandHandler != null)
                 { 
                 
-                    ChangeCustomerCreditStandingCommandHandler.HandleAsync(new ChangeCustomerCreditStanding { Id = message.CustomerId, CreditStanding = message.NewCreditStanding });
+                   await ChangeCustomerCreditStandingCommandHandler.HandleAsync(new ChangeCustomerCreditStanding { Id = message.CustomerId, CreditStanding = message.NewCreditStanding });
 
                 }
 
@@ -229,7 +229,7 @@ namespace CustomerApi.Infrastructure
                 if (message.CustomerId != Guid.Empty && ChangeCustomerCreditStandingCommandHandler != null && emailService != null && productServiceGateway != null)
                 {
                    
-                    ChangeCustomerCreditStandingCommandHandler.HandleAsync(new ChangeCustomerCreditStanding { Id = (Guid)message.CustomerId, CreditStanding = false });
+                    await ChangeCustomerCreditStandingCommandHandler.HandleAsync(new ChangeCustomerCreditStanding { Id = (Guid)message.CustomerId, CreditStanding = false });
 
                     var customer = await eventStore.Find<Customer, Guid>((Guid)message.CustomerId, eventDeserializer, cancellationToken);
 

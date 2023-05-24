@@ -55,7 +55,7 @@ namespace OrderApiC.CommandHandlers
             await _eventStore.Append(@event, typeof(Order).Name, _eventSerializer, _cancellationToken);
 
             _messagePublisher.PublishOrderStatusChangedMessage(
-                   command.Id, order.Orderlines.Select(x => new OrderlineConverter().Convert(x)).ToList(), "shipped");
+                   order.CustomerId, order.Orderlines.Select(x => new OrderlineConverter().Convert(x)).ToList(), "shipped");
 
         }
     }

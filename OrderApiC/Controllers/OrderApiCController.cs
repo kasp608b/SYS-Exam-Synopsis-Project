@@ -7,6 +7,8 @@ using SharedModels.EventStoreCQRS;
 
 namespace OrderApiC.Controllers
 {
+    [ApiController]
+    [Route("OrderApiC")]
     public class OrderApiCController : Controller
     {
         ICommandHandler<CancelOrder> _cancelOrderCommandHandler;
@@ -46,72 +48,23 @@ namespace OrderApiC.Controllers
         [HttpPost("CreateOrder")]
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrder createOrder)
         {
-            Console.WriteLine("Order post called");
-            var customer = _customerGateway.Get(createOrder.CustomerId);
-
-
-            if (customer.CustomerId != createOrder.CustomerId || customer.CustomerId == Guid.Empty)
+            try
             {
-                return BadRequest("The customer  does not exist");
-            }
+                Console.WriteLine("Order post called");
+                var customer = _customerGateway.Get(createOrder.CustomerId);
 
-            if (createOrder == null)
-            {
-                return BadRequest();
-            }
 
-            if (!customer.CreditStanding)
-            {
-                OrderDto orderDto = new OrderDto
+                if (customer.CustomerId != createOrder.CustomerId || customer.CustomerId == Guid.Empty)
                 {
-                    CustomerId = createOrder.CustomerId,
-                    Date = createOrder.Date,
-                    Orderlines = createOrder.OrderLines.Select(x => new OrderlineConverter().Convert(x)).ToList(),
-                    Status = new OrderStatusConverter().Convert(createOrder.Status),
-
-                };
-
-                // Publish OrderRejectedMessage.
-                messagePublisher.PublishOrderRejectedMessage(orderDto, "The customer has outstanding bills");
-
-                return BadRequest("The customer has outstanding bills");
-            }
-
-            if (ProductItemsAvailable(createOrder))
-            {
-                try
-                {
-
-
-                    // Create order.
-                    createOrder.Status = OrderStatus.completed;
-
-                    try
-                    {
-                        if (createOrder.Id == Guid.Empty)
-                        {
-                            createOrder.Id = Guid.NewGuid();
-                        }
-
-                        await _createOrderCommandHandler.HandleAsync(createOrder);
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
-                    }
-                    catch (Exception ex)
-                    {
-                        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-                    }
-
-                    // Publish OrderStatusChangedMessage. If this operation
-                    // fails, the order will not be created
-                    messagePublisher.PublishOrderStatusChangedMessage(
-                        createOrder.CustomerId, createOrder.OrderLines.Select(x => new OrderlineConverter().Convert(x)).ToList(), "completed");
-
-                    return Ok();
+                    return BadRequest("The customer  does not exist");
                 }
-                catch
+
+                if (createOrder == null)
+                {
+                    return BadRequest();
+                }
+
+                if (!customer.CreditStanding)
                 {
                     OrderDto orderDto = new OrderDto
                     {
@@ -123,27 +76,87 @@ namespace OrderApiC.Controllers
                     };
 
                     // Publish OrderRejectedMessage.
-                    messagePublisher.PublishOrderRejectedMessage(orderDto, "An error happened. Try again.");
-                    return StatusCode(500, "An error happened. Try again.");
+                    messagePublisher.PublishOrderRejectedMessage(orderDto, "The customer has outstanding bills");
+
+                    return BadRequest("The customer has outstanding bills");
+                }
+
+                if (ProductItemsAvailable(createOrder))
+                {
+                    try
+                    {
+
+
+                        // Create order.
+                        createOrder.Status = OrderStatus.completed;
+
+                        try
+                        {
+                            if (createOrder.Id == Guid.Empty)
+                            {
+                                createOrder.Id = Guid.NewGuid();
+                            }
+
+                            await _createOrderCommandHandler.HandleAsync(createOrder);
+                        }
+                        catch (InvalidOperationException ex)
+                        {
+                            return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+                        }
+                        catch (Exception ex)
+                        {
+                            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                        }
+
+                        // Publish OrderStatusChangedMessage. If this operation
+                        // fails, the order will not be created
+                        messagePublisher.PublishOrderStatusChangedMessage(
+                            createOrder.CustomerId, createOrder.OrderLines.Select(x => new OrderlineConverter().Convert(x)).ToList(), "completed");
+
+                        return Ok();
+                    }
+                    catch
+                    {
+                        OrderDto orderDto = new OrderDto
+                        {
+                            CustomerId = createOrder.CustomerId,
+                            Date = createOrder.Date,
+                            Orderlines = createOrder.OrderLines.Select(x => new OrderlineConverter().Convert(x)).ToList(),
+                            Status = new OrderStatusConverter().Convert(createOrder.Status),
+
+                        };
+
+                        // Publish OrderRejectedMessage.
+                        messagePublisher.PublishOrderRejectedMessage(orderDto, "An error happened. Try again.");
+                        return StatusCode(500, "An error happened. Try again.");
+                    }
+                }
+                else
+                {
+
+                    OrderDto orderDto = new OrderDto
+                    {
+                        CustomerId = createOrder.CustomerId,
+                        Date = createOrder.Date,
+                        Orderlines = createOrder.OrderLines.Select(x => new OrderlineConverter().Convert(x)).ToList(),
+                        Status = new OrderStatusConverter().Convert(createOrder.Status),
+
+                    };
+
+                    // Publish OrderRejectedMessage.
+                    messagePublisher.PublishOrderRejectedMessage(orderDto, "Not enough items in stock.");
+
+                    // If there are not enough product items available.
+                    return StatusCode(500, "Not enough items in stock.");
                 }
             }
-            else
+            catch (InvalidOperationException ex)
             {
-
-                OrderDto orderDto = new OrderDto
-                {
-                    CustomerId = createOrder.CustomerId,
-                    Date = createOrder.Date,
-                    Orderlines = createOrder.OrderLines.Select(x => new OrderlineConverter().Convert(x)).ToList(),
-                    Status = new OrderStatusConverter().Convert(createOrder.Status),
-
-                };
-
-                // Publish OrderRejectedMessage.
-                messagePublisher.PublishOrderRejectedMessage(orderDto, "Not enough items in stock.");
-
-                // If there are not enough product items available.
-                return StatusCode(500, "Not enough items in stock.");
+                return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
@@ -151,12 +164,12 @@ namespace OrderApiC.Controllers
         // This action method cancels an order and publishes an OrderStatusChangedMessage
         // with topic set to "cancelled".
         [HttpPut("{id}/cancelOrder")]
-        public IActionResult Cancel(Guid id, [FromBody] CancelOrder cancelOrder)
+        public async Task<IActionResult> Cancel(Guid id, [FromBody] CancelOrder cancelOrder)
         {
 
             try
             {
-                _cancelOrderCommandHandler.HandleAsync(cancelOrder);
+                await _cancelOrderCommandHandler.HandleAsync(cancelOrder);
                 return StatusCode(200, "Order cancelled");
 
 
@@ -176,11 +189,11 @@ namespace OrderApiC.Controllers
 
         // PUT orderApiC/5/shipOrder
         [HttpPut("{id}/shipOrder")]
-        public IActionResult Ship(Guid id, [FromBody] ShipOrder shipOrder)
+        public async Task<IActionResult> Ship(Guid id, [FromBody] ShipOrder shipOrder)
         {
             try
             {
-                _shipOrderCommandHandler.HandleAsync(shipOrder);
+                await _shipOrderCommandHandler.HandleAsync(shipOrder);
                 return StatusCode(200, "Order shipped");
             }
             catch (InvalidOperationException ex)
@@ -194,11 +207,11 @@ namespace OrderApiC.Controllers
         }
 
         [HttpPut("{id}/payforOrder")]
-        public IActionResult PayForOrder(Guid id, [FromBody] PayforOrder payforOrder)
+        public async Task<IActionResult> PayForOrder(Guid id, [FromBody] PayforOrder payforOrder)
         {
             try
             {
-                _payforOrderCommandHandler.HandleAsync(payforOrder);
+                await _payforOrderCommandHandler.HandleAsync(payforOrder);
                 return StatusCode(200, "Order paid for");
             }
             catch (InvalidOperationException ex)
