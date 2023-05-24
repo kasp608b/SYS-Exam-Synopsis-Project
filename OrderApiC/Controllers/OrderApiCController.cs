@@ -150,6 +150,39 @@ namespace OrderApiC.Controllers
                     return StatusCode(500, "Not enough items in stock.");
                 }
             }
+            catch (AggregateException ae)
+            {
+                try
+                {
+                    ae.Flatten().Handle(e =>
+                    {
+                        if (e is InvalidOperationException)
+                        {
+                            throw new InvalidOperationException($" An invalid operation exception was thrown with message: \n {e.Message}");
+                        }
+                        else if (e is Exception)
+                        {
+                            throw new Exception($" An exception was thrown with message: \n {e.Message}");
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    });
+
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+
+            }
             catch (InvalidOperationException ex)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
@@ -175,6 +208,39 @@ namespace OrderApiC.Controllers
 
 
             }
+            catch (AggregateException ae)
+            {
+                try
+                {
+                    ae.Flatten().Handle(e =>
+                    {
+                        if (e is InvalidOperationException)
+                        {
+                            throw new InvalidOperationException($" An invalid operation exception was thrown with message: \n {e.Message}");
+                        }
+                        else if (e is Exception)
+                        {
+                            throw new Exception($" An exception was thrown with message: \n {e.Message}");
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    });
+
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+
+            }
             catch (InvalidOperationException ex)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
@@ -196,6 +262,39 @@ namespace OrderApiC.Controllers
                 await _shipOrderCommandHandler.HandleAsync(shipOrder);
                 return StatusCode(200, "Order shipped");
             }
+            catch (AggregateException ae)
+            {
+                try
+                {
+                    ae.Flatten().Handle(e =>
+                    {
+                        if (e is InvalidOperationException)
+                        {
+                            throw new InvalidOperationException($" An invalid operation exception was thrown with message: \n {e.Message}");
+                        }
+                        else if (e is Exception)
+                        {
+                            throw new Exception($" An exception was thrown with message: \n {e.Message}");
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    });
+
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+
+            }
             catch (InvalidOperationException ex)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
@@ -213,6 +312,39 @@ namespace OrderApiC.Controllers
             {
                 await _payforOrderCommandHandler.HandleAsync(payforOrder);
                 return StatusCode(200, "Order paid for");
+            }
+            catch (AggregateException ae)
+            {
+                try
+                {
+                    ae.Flatten().Handle(e =>
+                    {
+                        if (e is InvalidOperationException)
+                        {
+                            throw new InvalidOperationException($" An invalid operation exception was thrown with message: \n {e.Message}");
+                        }
+                        else if (e is Exception)
+                        {
+                            throw new Exception($" An exception was thrown with message: \n {e.Message}");
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    });
+
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+
             }
             catch (InvalidOperationException ex)
             {
