@@ -62,6 +62,7 @@ namespace CustomerApi.Controllers
 
         }
 
+        /*
         // POST customer
         [HttpPost]
         public IActionResult Post([FromBody] CustomerDto customerDto)
@@ -144,5 +145,6 @@ namespace CustomerApi.Controllers
 
 
         }
+        */
     }
 }

@@ -26,6 +26,7 @@ namespace CustomerApi.Models
             {
                 CustomerId = hiddenCustomer.CustomerId,
                 CompanyName = hiddenCustomer.CompanyName,
+                RegistrationNumber = hiddenCustomer.RegistrationNumber,
                 Email = hiddenCustomer.Email,
                 Phone = hiddenCustomer.Phone,
                 BillingAddress = hiddenCustomer.BillingAddress,

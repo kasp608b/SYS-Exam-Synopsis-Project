@@ -1,6 +1,11 @@
-﻿using CustomerApi.Data;
+﻿using Common.EventStoreCQRS;
+using CustomerApiC.Aggregates;
+using CustomerApiC.Commands;
 using EasyNetQ;
+using EventStore.Client;
 using SharedModels;
+using SharedModels.EventStoreCQRS;
+using System.Threading;
 
 namespace CustomerApi.Infrastructure
 {
@@ -38,7 +43,7 @@ namespace CustomerApi.Infrastructure
 
 
                     // * cancelled
-                    bus.PubSub.Subscribe<OrderStatusChangedMessage>("productApiHkCancelled",
+                    bus.PubSub.Subscribe<OrderStatusChangedMessage>("customerApiHkCancelled",
                         HandleOrderCancelled, x => x.WithTopic("cancelled"));
 
                     // * order rejected
@@ -65,18 +70,23 @@ namespace CustomerApi.Infrastructure
 
         }
 
-        private void HandleOrderCancelled(OrderStatusChangedMessage message)
+        private async void HandleOrderCancelled(OrderStatusChangedMessage message)
         {
             Console.WriteLine("Handle order Cancelled called");
             using (var scope = provider.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 var emailService = services.GetService<IEmailService>();
-                var customerRepo = services.GetService<ICustomerRepository>();
+                var eventStore = services.GetService<EventStoreClient>();
+                var eventDeserializer = services.GetService<EventDeserializer>();
+                var cancellationToken = new CancellationToken();
 
-                if (message.CustomerId != null && customerRepo != null && emailService != null)
+                if (message.CustomerId != null && eventStore != null && emailService != null)
                 {
-                    var customer = customerRepo.Get((Guid)message.CustomerId);
+                    var customer = await eventStore.Find<Customer,Guid>((Guid)message.CustomerId, eventDeserializer, cancellationToken);
+
+                    if (customer == null)
+                        return;
 
                     var sb = new System.Text.StringBuilder();
                     sb.AppendLine($"Dear {customer.CompanyName}");
@@ -90,21 +100,25 @@ namespace CustomerApi.Infrastructure
             }
         }
 
-        private void HandleOrderCompleted(OrderStatusChangedMessage message)
+        private async void HandleOrderCompleted(OrderStatusChangedMessage message)
         {
             Console.WriteLine("Handle order completed called");
             using (var scope = provider.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 var emailService = services.GetService<IEmailService>();
-                var customerRepo = services.GetService<ICustomerRepository>();
+                var eventStore = services.GetService<EventStoreClient>();
+                var eventDeserializer = services.GetService<EventDeserializer>();
+                var cancellationToken = new CancellationToken();
                 var productServiceGateway = services.GetService<IServiceGateway<ProductDto>>();
 
 
-                if (message.CustomerId != null && customerRepo != null && emailService != null && productServiceGateway != null)
+                if (message.CustomerId != null && eventStore != null && emailService != null && productServiceGateway != null)
                 {
-                    var customer = customerRepo.Get((Guid)message.CustomerId);
-
+                    var customer = await eventStore.Find<Customer, Guid>((Guid)message.CustomerId, eventDeserializer, cancellationToken);
+                    if (customer == null)
+                        return;
+                    
                     decimal totalPrice = 0;
 
                     var sb = new System.Text.StringBuilder();
@@ -130,22 +144,28 @@ namespace CustomerApi.Infrastructure
             }
         }
 
-        private void HandleOrderRejected(OrderRejectedMessage message)
+        private async void HandleOrderRejected(OrderRejectedMessage message)
         {
             Console.WriteLine("Handle order rejected called");
             using (var scope = provider.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 var emailService = services.GetService<IEmailService>();
-                var customerRepo = services.GetService<ICustomerRepository>();
+                var eventStore = services.GetService<EventStoreClient>();
+                var eventDeserializer = services.GetService<EventDeserializer>();
+                var cancellationToken = new CancellationToken();
                 var productServiceGateway = services.GetService<IServiceGateway<ProductDto>>();
 
 
-                if (customerRepo != null && emailService != null && productServiceGateway != null)
+                if (eventStore != null && emailService != null && productServiceGateway != null)
                 {
-                    var customer = customerRepo.Get((Guid)message.orderDto.CustomerId);
-
+                    
+                    var customer = await eventStore.Find<Customer, Guid>((Guid)message.orderDto.CustomerId, eventDeserializer, cancellationToken);
+                    if (customer == null)
+                        return;
+                    
                     decimal totalPrice = 0;
+                    
 
                     var sb = new System.Text.StringBuilder();
                     sb.AppendLine($"Dear {customer.CompanyName}");
@@ -174,42 +194,48 @@ namespace CustomerApi.Infrastructure
             Console.WriteLine("Handle credit status changed called");
             using (var scope = provider.CreateScope())
             {
+                
                 var services = scope.ServiceProvider;
-                var customerRepo = services.GetService<ICustomerRepository>();
+                var eventStore = services.GetService<EventStoreClient>();
+                var eventDeserializer = services.GetService<EventDeserializer>();
+                var cancellationToken = new CancellationToken();
+                var ChangeCustomerCreditStandingCommandHandler = services.GetService<ICommandHandler<ChangeCustomerCreditStanding>>();
 
 
-                if (customerRepo != null)
-                {
-                    var customer = customerRepo.Get((Guid)message.CustomerId);
-
-                    customer.CreditStanding = message.NewCreditStanding;
-
-                    customerRepo.Edit(customer);
+                if (ChangeCustomerCreditStandingCommandHandler != null)
+                { 
+                
+                    ChangeCustomerCreditStandingCommandHandler.HandleAsync(new ChangeCustomerCreditStanding { Id = message.CustomerId, CreditStanding = message.NewCreditStanding });
 
                 }
 
             }
         }
 
-        private void HandleOrderShipped(OrderStatusChangedMessage message)
+        private async void HandleOrderShipped(OrderStatusChangedMessage message)
         {
             Console.WriteLine("Handle order shipped called");
             using (var scope = provider.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 var emailService = services.GetService<IEmailService>();
-                var customerRepo = services.GetService<ICustomerRepository>();
+                var ChangeCustomerCreditStandingCommandHandler = services.GetService<ICommandHandler<ChangeCustomerCreditStanding>>();
+                var eventStore = services.GetService<EventStoreClient>();
+                var eventDeserializer = services.GetService<EventDeserializer>();
+                var cancellationToken = new CancellationToken();
                 var productServiceGateway = services.GetService<IServiceGateway<ProductDto>>();
 
 
-                if (message.CustomerId != Guid.Empty && customerRepo != null && emailService != null && productServiceGateway != null)
+                if (message.CustomerId != Guid.Empty && ChangeCustomerCreditStandingCommandHandler != null && emailService != null && productServiceGateway != null)
                 {
-                    var customer = customerRepo.Get((Guid)message.CustomerId);
+                   
+                    ChangeCustomerCreditStandingCommandHandler.HandleAsync(new ChangeCustomerCreditStanding { Id = (Guid)message.CustomerId, CreditStanding = false });
 
-                    customer.CreditStanding = false;
+                    var customer = await eventStore.Find<Customer, Guid>((Guid)message.CustomerId, eventDeserializer, cancellationToken);
 
-                    customerRepo.Edit(customer);
-
+                    if (customer == null)
+                        return;
+                    
                     decimal totalPrice = 0;
 
                     var sb = new System.Text.StringBuilder();
