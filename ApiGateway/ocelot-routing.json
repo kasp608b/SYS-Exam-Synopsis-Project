@@ -1,9 +1,6 @@
 ﻿{
   "Routes": [
-
-    // ProductApi routes
     {
-
       // ProductApiQ routes
       "DownstreamPathTemplate": "/ProductApiQ/{catchAll}",
       "DownstreamScheme": "http",
@@ -29,7 +26,6 @@
       "UpstreamPathTemplate": "/productapi/{catchAll}",
       "UpstreamHttpMethod": [ "Post", "Put", "Delete" ]
     },
-    // OrderApi routes
     {
       // OrderApiQ routes
       "DownstreamPathTemplate": "/OrderApiQ/{catchAll}",
@@ -56,7 +52,6 @@
       "UpstreamPathTemplate": "/orderapi/{catchAll}",
       "UpstreamHttpMethod": [ "Post", "Put", "Delete" ]
     },
-    // CustomerApi routes
     {
       // CustomerApiQ routes
       "DownstreamPathTemplate": "/CustomerApiQ/{catchAll}",
@@ -67,7 +62,7 @@
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/orderapi/{catchAll}",
+      "UpstreamPathTemplate": "/customerapi/{catchAll}",
       "UpstreamHttpMethod": [ "Get" ]
     },
     {
@@ -80,12 +75,10 @@
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/orderapi/{catchAll}",
+      "UpstreamPathTemplate": "/customerapi/{catchAll}",
       "UpstreamHttpMethod": [ "Post", "Put", "Delete" ]
     }
-
   ],
-  // Global configuration
   "GlobalConfiguration": {
     "BaseUrl": "https://localhost:7430"
   }
