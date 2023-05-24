@@ -42,7 +42,7 @@ namespace OrderApiC.CommandHandlers
                 Status = new OrderStatusConverter().Convert(command.Status)
             };
 
-            await _eventStore.Append(@event, typeof(Order).Name, _eventSerializer, _cancellationToken);
+            await _eventStore.Append(@event, typeof(OrderAggregate).Name, _eventSerializer, _cancellationToken);
         }
     }
 }

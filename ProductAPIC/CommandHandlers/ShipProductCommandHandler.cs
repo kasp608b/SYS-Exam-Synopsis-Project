@@ -39,6 +39,7 @@ namespace ProductAPIC.CommandHandlers
             var @event = new ProductShipped
             {
                 Id = command.Id,
+                AmountShipped = command.AmountShipped,
                 ChangedAt = DateTime.UtcNow
             };
 
