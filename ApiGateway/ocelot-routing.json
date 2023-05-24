@@ -1,18 +1,33 @@
 ﻿{
   "Routes": [
 
+    // ProductApi routes
     {
-      // ProductApi routes
+
+      // ProductApiQ routes
       "DownstreamPathTemplate": "/{catchAll}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "productapi",
+          "Host": "productapiq",
           "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/productapi/{catchAll}",
       "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      // ProductApiC routes
+      "DownstreamPathTemplate": "/{catchAll}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "productapic",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/productapi/{catchAll}",
+      "UpstreamHttpMethod": [ "Post", "Put", "Delete" ]
     },
 
     {

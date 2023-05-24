@@ -12,7 +12,7 @@ string gRpcConnectionString = "esdb://customereventstore.db:2114?tls=false";
 
 string cloudAMQPConnectionString = "host=rabbitmq";
 
-string productServiceBaseUrl = "http://productapiq/products/";
+string productServiceBaseUrl = "http://productapiq/ProductApiQ/";
 
 // Add services to the container.
 

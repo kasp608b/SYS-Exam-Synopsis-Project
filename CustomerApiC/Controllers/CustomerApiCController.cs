@@ -5,7 +5,7 @@ using SharedModels.EventStoreCQRS;
 
 namespace CustomerApiC.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("CustomerApiC")]
     [ApiController]
     public class CustomerApiCController : ControllerBase
     {

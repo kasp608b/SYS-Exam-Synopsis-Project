@@ -6,7 +6,7 @@ using SharedModels;
 namespace ProductApi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("ProductApiQ")]
     public class ProductsController : ControllerBase
     {
         private readonly IRepository<Product> repository;
