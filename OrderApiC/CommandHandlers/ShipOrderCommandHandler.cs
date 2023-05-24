@@ -21,13 +21,13 @@ namespace OrderApiC.CommandHandlers
 
         private readonly IMessagePublisher _messagePublisher;
 
-        public ShipOrderCommandHandler(EventStoreClient eventStore, EventSerializer eventSerializer, EventDeserializer eventDeserializer, IMessagePublisher messagePublisher, CancellationToken cancellationToken)
+        public ShipOrderCommandHandler(EventStoreClient eventStore, EventSerializer eventSerializer, EventDeserializer eventDeserializer, IMessagePublisher messagePublisher)
         {
             _eventStore = eventStore;
             _eventSerializer = eventSerializer;
             _eventDeserializer = eventDeserializer;
             _messagePublisher = messagePublisher;
-            _cancellationToken = cancellationToken;
+            _cancellationToken = new CancellationToken();
         }
 
         public async Task HandleAsync(ShipOrder command)
