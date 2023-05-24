@@ -1,11 +1,10 @@
-﻿using SharedModels;
+﻿using OrderApiC.Models.Converters;
 using SharedModels.EventStoreCQRS;
-using SharedModels.OrderAPICommon.Converters;
 using SharedModels.OrderAPICommon.Events;
 
 namespace OrderApiC.Aggregates
 {
-    public class Order : Aggregate<Guid>
+    public class OrderAggregate : Aggregate<Guid>
     {
         public Guid OrderId { get; set; }
         public DateTime? Date { get; set; }
@@ -14,7 +13,7 @@ namespace OrderApiC.Aggregates
         public List<OrderLine> Orderlines { get; set; }
         public bool Deleted { get; set; }
 
-        public Order()
+        public OrderAggregate()
         {
             Orderlines = new List<OrderLine>();
         }

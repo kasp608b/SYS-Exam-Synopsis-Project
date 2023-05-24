@@ -1,6 +1,6 @@
 ﻿using SharedModels;
 
-namespace OrderApi.Infrastructure
+namespace OrderApiC.Infrastructure
 {
     public interface IMessagePublisher
     {

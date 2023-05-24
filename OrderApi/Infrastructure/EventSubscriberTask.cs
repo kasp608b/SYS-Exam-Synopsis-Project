@@ -46,7 +46,7 @@ namespace OrderApiQ.Infrastructure
                         return; // skip system events
                     }
 
-                    if (@event.OriginalStreamId.StartsWith("Order-"))
+                    if (@event.OriginalStreamId.StartsWith("OrderAggregate-"))
                     {
                         try
                         {

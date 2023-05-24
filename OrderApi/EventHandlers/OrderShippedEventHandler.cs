@@ -1,5 +1,5 @@
-﻿using OrderApi.Data;
-using OrderApi.Models;
+﻿using OrderApiQ.Data;
+using OrderApiQ.Models.Converters;
 using SharedModels.EventStoreCQRS;
 using SharedModels.OrderAPICommon.Events;
 

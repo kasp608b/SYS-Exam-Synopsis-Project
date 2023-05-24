@@ -1,12 +1,6 @@
 ﻿using Common.EventStoreCQRS;
 using EventStore.Client;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace SharedModels.EventStoreCQRS
 {
@@ -15,7 +9,7 @@ namespace SharedModels.EventStoreCQRS
         public static async Task<TAggregate?> Find<TAggregate, TId>(this EventStoreClient eventStore, Guid id, EventDeserializer eventDeserializer, CancellationToken cancellationToken)
     where TAggregate : Aggregate<TId>, new()
         {
-          
+
             var readResult = eventStore.ReadStreamAsync(
                 Direction.Forwards,
                 $"{typeof(TAggregate).Name}-{id}",
@@ -58,7 +52,56 @@ namespace SharedModels.EventStoreCQRS
             return aggregate;
         }
 
-        public static async Task Append<TEvent>(this EventStoreClient eventStore, TEvent @event, string aggregateType, EventSerializer eventSerializer ,CancellationToken cancellationToken) where TEvent : IEvent
+        public static async Task<TAggregate?> Find<TAggregate, TId>(this EventStoreClient eventStore, string streamName, EventDeserializer eventDeserializer, CancellationToken cancellationToken)
+   where TAggregate : Aggregate<TId>, new()
+        {
+
+            var readResult = eventStore.ReadStreamAsync(
+                Direction.Forwards,
+                streamName,
+                StreamPosition.Start,
+                StreamState.StreamExists,
+                cancellationToken: cancellationToken
+            );
+
+            if (await readResult.ReadState == ReadState.StreamNotFound)
+            {
+                return null;
+            }
+
+            var aggregate = new TAggregate();
+
+            await foreach (var @event in readResult)
+            {
+                try
+                {
+                    if (@event.Event.EventType.StartsWith("$") || @event.Event.EventType.StartsWith("_"))
+                    {
+                        continue; // skip system events
+                    }
+
+                    var eventData = eventDeserializer.Deserialize(@event.Event.Data.ToArray());
+
+                    aggregate.When(eventData!);
+                }
+                catch (JsonSerializationException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+
+                }
+            }
+
+            return aggregate;
+        }
+
+
+
+
+        public static async Task Append<TEvent>(this EventStoreClient eventStore, TEvent @event, string aggregateType, EventSerializer eventSerializer, CancellationToken cancellationToken) where TEvent : IEvent
         {
             var eventData = new EventData(
                 Uuid.NewUuid(),

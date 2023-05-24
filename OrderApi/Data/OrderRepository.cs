@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SharedModels;
 
-namespace OrderApi.Data
+namespace OrderApiQ.Data
 {
     public class OrderRepository : IOrderRepository
     {

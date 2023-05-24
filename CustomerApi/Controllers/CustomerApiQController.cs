@@ -6,13 +6,13 @@ using SharedModels;
 namespace CustomerApi.Controllers
 {
     [ApiController]
-    [Route("CustomerApiC")]
-    public class CustomersController : ControllerBase
+    [Route("CustomerApiQ")]
+    public class CustomerApiQController : ControllerBase
     {
         private readonly ICustomerRepository repository;
         private IConverter<Customer, CustomerDto> customerConverter;
 
-        public CustomersController(ICustomerRepository repo, IConverter<Customer, CustomerDto> converter)
+        public CustomerApiQController(ICustomerRepository repo, IConverter<Customer, CustomerDto> converter)
         {
             repository = repo;
             customerConverter = converter;

@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using SharedModels;
-using System;
-
-namespace OrderApi.Data
+﻿namespace OrderApiQ.Data
 {
     public class DbInitializer : IDbInitializer
     {

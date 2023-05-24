@@ -1,4 +1,6 @@
-﻿namespace SharedModels.OrderAPICommon.Converters
+﻿using SharedModels;
+
+namespace OrderApiC.Models.Converters
 {
     public class OrderStatusConverter : IConverter<OrderStatus, OrderStatusDto>
     {

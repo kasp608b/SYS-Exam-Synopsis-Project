@@ -1,7 +1,7 @@
 ﻿using RestSharp;
 using SharedModels;
 
-namespace OrderApi.Infrastructure
+namespace OrderApiC.Infrastructure
 {
     public class ProductServiceGateway : IServiceGateway<ProductDto>
     {

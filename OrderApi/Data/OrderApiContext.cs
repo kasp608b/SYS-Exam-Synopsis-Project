@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SharedModels;
 
-namespace OrderApi.Data
+namespace OrderApiQ.Data
 {
     public class OrderApiContext : DbContext
     {
@@ -20,7 +19,7 @@ namespace OrderApi.Data
              */
             modelBuilder.Entity<OrderLine>()
                 .HasKey(c => new { c.OrderId, c.ProductId });
-            
+
         }
 
         public DbSet<Order> Orders { get; set; }

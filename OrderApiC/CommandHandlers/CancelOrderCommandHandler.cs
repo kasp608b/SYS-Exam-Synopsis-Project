@@ -2,8 +2,9 @@
 using EventStore.Client;
 using OrderApiC.Aggregates;
 using OrderApiC.Commands;
+using OrderApiC.Infrastructure;
+using OrderApiC.Models.Converters;
 using SharedModels.EventStoreCQRS;
-using SharedModels.OrderAPICommon.Converters;
 using SharedModels.OrderAPICommon.Events;
 
 namespace OrderApiC.CommandHandlers
@@ -17,24 +18,47 @@ namespace OrderApiC.CommandHandlers
         private readonly EventDeserializer _eventDeserializer;
 
         private readonly CancellationToken _cancellationToken;
+        private readonly IMessagePublisher _messagePublisher;
 
-        public CancelOrderCommandHandler(EventStoreClient eventStore, EventSerializer eventSerializer, EventDeserializer eventDeserializer)
+
+
+        public CancelOrderCommandHandler(EventStoreClient eventStore, EventSerializer eventSerializer, EventDeserializer eventDeserializer, IMessagePublisher messagePublisher)
         {
             _eventStore = eventStore;
             _eventSerializer = eventSerializer;
             _eventDeserializer = eventDeserializer;
             _cancellationToken = new CancellationToken();
+            _messagePublisher = messagePublisher;
         }
 
         public async Task HandleAsync(CancelOrder command)
         {
             //Check if the order already exists
-            Order? order = await _eventStore.Find<Order, Guid>(command.Id, _eventDeserializer, _cancellationToken);
+            OrderAggregate? order = await _eventStore.Find<OrderAggregate, Guid>(command.Id, _eventDeserializer, _cancellationToken);
 
             if (order == null)
             {
                 throw new InvalidOperationException($"The order with id:{command.Id} does not exist yet and therfore can not be cancelled");
             }
+
+            if (order.Status == OrderStatus.cancelled)
+            {
+                throw new InvalidOperationException($"The order with id:{command.Id} has already been cancelled");
+            }
+
+            if (order.Status == OrderStatus.shipped)
+            {
+                throw new InvalidOperationException($"The order with id:{command.Id} has already been shipped and can not be cancelled");
+            }
+
+            if (order.Status == OrderStatus.paid)
+            {
+                throw new InvalidOperationException($"The order with id:{command.Id} has already been paid and can not be cancelled");
+            }
+
+
+
+
 
             var @event = new OrderCanceled
             {
@@ -42,7 +66,12 @@ namespace OrderApiC.CommandHandlers
                 Status = new OrderStatusConverter().Convert(command.Status)
             };
 
-            await _eventStore.Append(@event, typeof(Order).Name, _eventSerializer, _cancellationToken);
+            await _eventStore.Append(@event, typeof(OrderAggregate).Name, _eventSerializer, _cancellationToken);
+
+            // Publish OrderStatusChangedMessage
+            _messagePublisher.PublishOrderStatusChangedMessage(
+                order.Id, order.Orderlines.Select(x => new OrderlineConverter().Convert(x)).ToList(), "cancelled");
+
         }
     }
 }
