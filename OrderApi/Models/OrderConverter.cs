@@ -1,8 +1,9 @@
 ﻿using SharedModels;
+using SharedModels.OrderAPICommon.Converters;
 
 namespace OrderApi.Models
 {
-    public class OrderConverter : IConverter<Order,OrderDto>
+    public class OrderConverter : IConverter<Order, OrderDto>
     {
         public Order Convert(OrderDto sharedOrder)
         {

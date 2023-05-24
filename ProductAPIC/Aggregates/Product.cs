@@ -46,6 +46,8 @@ namespace ProductAPIC.Aggregates
                 case ItemsRemovedFromStock itemsRemovedFromStock:
                     Apply(itemsRemovedFromStock);
                     break;
+                default:
+                    throw new InvalidOperationException($"Unknown event type: {@event.GetType().Name}");
 
 
 
@@ -62,7 +64,7 @@ namespace ProductAPIC.Aggregates
             Category = @event.Category;
             ItemsInStock = @event.ItemsInStock;
             ItemsReserved = @event.ItemsReserved;
-            
+
         }
 
         private void Apply(ProductNameChanged @event)
@@ -88,12 +90,12 @@ namespace ProductAPIC.Aggregates
 
         }
 
-        private void Apply (ProductDeleted @event)
+        private void Apply(ProductDeleted @event)
         {
             Deleted = true;
         }
 
-        private void Apply (ReservedItemsIncreased @event)
+        private void Apply(ReservedItemsIncreased @event)
         {
             ItemsReserved += @event.ItemsReserved;
         }
@@ -104,12 +106,12 @@ namespace ProductAPIC.Aggregates
 
         }
 
-        private void Apply (ItemsAddedToStock @event)
+        private void Apply(ItemsAddedToStock @event)
         {
             ItemsInStock += @event.ItemsInStock;
         }
 
-        private void Apply (ItemsRemovedFromStock @event)
+        private void Apply(ItemsRemovedFromStock @event)
         {
             ItemsInStock -= @event.ItemsInStock;
         }

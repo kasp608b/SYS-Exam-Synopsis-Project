@@ -1,4 +1,4 @@
-﻿using SharedModels;
+﻿using OrderApi.Data;
 using SharedModels.EventStoreCQRS;
 using SharedModels.OrderAPICommon.Events;
 
@@ -12,7 +12,7 @@ namespace OrderApiQ.EventHandlers
             {
 
                 var services = scope.ServiceProvider;
-                var repository = services.GetService<IRepository<Order>>();
+                var repository = services.GetService<IOrderRepository>();
 
                 if (repository.Get(@event.Id) == null)
                     throw new InvalidOperationException("Order not found, cannot remove Order that does not exist.");

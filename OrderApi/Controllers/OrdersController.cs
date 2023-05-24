@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OrderApi.Data;
 using OrderApi.Infrastructure;
-using OrderApi.Models;
 using SharedModels;
+using SharedModels.OrderAPICommon.Converters;
 
 namespace OrderApi.Controllers
 {
@@ -16,14 +16,14 @@ namespace OrderApi.Controllers
         IMessagePublisher messagePublisher;
         private readonly IConverter<Order, OrderDto> OrderConverter;
 
-        public OrdersController(IRepository<Order> repos,
+        public OrdersController(IOrderRepository repos,
             IServiceGateway<ProductDto> gateway,
             IServiceGateway<CustomerDto> customerGateway,
             IMessagePublisher publisher,
             IConverter<Order, OrderDto> orderconverter
             )
         {
-            repository = repos as IOrderRepository;
+            repository = repos;
             productServiceGateway = gateway;
             messagePublisher = publisher;
             _customerGateway = customerGateway;

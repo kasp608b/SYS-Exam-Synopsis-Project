@@ -1,4 +1,5 @@
-﻿using OrderApi.Models;
+﻿using OrderApi.Data;
+using OrderApi.Models;
 using SharedModels;
 using SharedModels.EventStoreCQRS;
 using SharedModels.OrderAPICommon.Events;
@@ -13,7 +14,7 @@ namespace OrderApiQ.EventHandlers
             {
 
                 var services = scope.ServiceProvider;
-                var repository = services.GetService<IRepository<Order>>();
+                var repository = services.GetService<IOrderRepository>();
 
                 if (repository.Get(@event.Id) != null)
                     throw new InvalidOperationException("Order already exists, cannot create Order that already exists.");

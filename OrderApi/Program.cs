@@ -55,7 +55,7 @@ builder.Services.AddScoped<IEventHandler<OrderShipped>, OrderShippedEventHandler
 
 
 // Register repositories for dependency injection
-builder.Services.AddScoped<IRepository<Order>, OrderRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 // Register database initializer for dependency injection
 builder.Services.AddTransient<IDbInitializer, DbInitializer>();

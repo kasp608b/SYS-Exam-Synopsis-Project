@@ -1,5 +1,5 @@
-﻿using OrderApi.Models;
-using SharedModels;
+﻿using OrderApi.Data;
+using OrderApi.Models;
 using SharedModels.EventStoreCQRS;
 using SharedModels.OrderAPICommon.Events;
 
@@ -13,7 +13,7 @@ namespace OrderApiQ.EventHandlers
             {
 
                 var services = scope.ServiceProvider;
-                var repository = services.GetService<IRepository<Order>>();
+                var repository = services.GetService<IOrderRepository>();
 
                 var order = repository.Get(@event.Id);
 

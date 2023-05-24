@@ -102,6 +102,23 @@ services:
     ports:
       - 9004:80
       - 9005:443
+      
+  
+  orderapic:
+    image: ${DOCKER_REGISTRY-}orderapic
+    build:
+      context: .
+      dockerfile: OrderApiC/Dockerfile
+    environment:
+      - HOSTNAMERABBIT=rabbitmq
+    restart: on-failure 
+    depends_on:
+       rabbitmq:
+        condition: service_healthy
+    links: 
+        - rabbitmq  
+    ports:
+      - 9008:80     
 
   apigateway:
     image: ${DOCKER_REGISTRY-}apigateway
@@ -177,10 +194,7 @@ services:
       - type: volume
         source: ordereventstore.db-volume-logs
         target: /var/log/producteventstore.db         
-        
-
- 
-
+    
 volumes:
   producteventstore.db-volume-data:
   producteventstore.db-volume-logs:
@@ -203,6 +217,7 @@ volumes:
   #  image: grafana/grafana
   #  ports:
   #    - "3000:3000"
+
 
 
 

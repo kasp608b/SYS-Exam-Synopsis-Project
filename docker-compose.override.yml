@@ -36,3 +36,10 @@ services:
     ports:
       - "80"
 
+
+  orderapic:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+
