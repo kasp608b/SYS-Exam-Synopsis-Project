@@ -64,8 +64,8 @@ namespace OrderApiC.CommandHandlers
         private async Task<bool> CreditStandingHasChanged(Guid customerId)
         {
             HashSet<string> streamNames = new HashSet<string>();
-            var prefix = $"{typeof(Order).Name}-";
-            var events = _eventStore.ReadStreamAsync(Direction.Forwards, "$all", StreamPosition.Start);
+            var prefix = $"{typeof(OrderAggregate).Name}-";
+            var events = _eventStore.ReadAllAsync(Direction.Forwards, Position.Start);
 
             await foreach (var @event in events)
             {
@@ -79,13 +79,13 @@ namespace OrderApiC.CommandHandlers
             {
                 var order = await _eventStore.Find<OrderAggregate, Guid>(streamName, _eventDeserializer, _cancellationToken);
 
-                if (order.CustomerId == customerId && order.Status == OrderStatus.paid)
+                if (order.CustomerId == customerId && order.Status == OrderStatus.shipped)
                 {
-                    return true;
+                    return false;
                 }
             }
 
-            return false;
+            return true;
 
 
         }
