@@ -60,6 +60,39 @@ namespace ProductAPIC.Controllers
                 await _createProductCommandHandler.HandleAsync(command);
                 return Ok();
             }
+            catch (AggregateException ae)
+            {
+                try
+                {
+                    ae.Flatten().Handle(e =>
+                    {
+                        if (e is InvalidOperationException)
+                        {
+                            throw new InvalidOperationException($" An invalid operation exception was thrown with message: \n {e.Message}");
+                        }
+                        else if (e is Exception)
+                        {
+                            throw new Exception($" An exception was thrown with message: \n {e.Message}");
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    });
+
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+
+            }
             catch (InvalidOperationException ex)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
@@ -79,6 +112,39 @@ namespace ProductAPIC.Controllers
                 command.Id = id;
                 await _changeProductNameCommandHandler.HandleAsync(command);
                 return Ok();
+            }
+            catch (AggregateException ae)
+            {
+                try
+                {
+                    ae.Flatten().Handle(e =>
+                    {
+                        if (e is InvalidOperationException)
+                        {
+                            throw new InvalidOperationException($" An invalid operation exception was thrown with message: \n {e.Message}");
+                        }
+                        else if (e is Exception)
+                        {
+                            throw new Exception($" An exception was thrown with message: \n {e.Message}");
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    });
+
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+
             }
             catch (InvalidOperationException ex)
             {
@@ -100,6 +166,39 @@ namespace ProductAPIC.Controllers
                 await _changeProductPriceCommandHandler.HandleAsync(command);
                 return Ok();
             }
+            catch (AggregateException ae)
+            {
+                try
+                {
+                    ae.Flatten().Handle(e =>
+                    {
+                        if (e is InvalidOperationException)
+                        {
+                            throw new InvalidOperationException($" An invalid operation exception was thrown with message: \n {e.Message}");
+                        }
+                        else if (e is Exception)
+                        {
+                            throw new Exception($" An exception was thrown with message: \n {e.Message}");
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    });
+
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+
+            }
             catch (InvalidOperationException ex)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
@@ -119,6 +218,39 @@ namespace ProductAPIC.Controllers
                 command.Id = id;
                 await _changeProductCategoryCommandHandler.HandleAsync(command);
                 return Ok();
+            }
+            catch (AggregateException ae)
+            {
+                try
+                {
+                    ae.Flatten().Handle(e =>
+                    {
+                        if (e is InvalidOperationException)
+                        {
+                            throw new InvalidOperationException($" An invalid operation exception was thrown with message: \n {e.Message}");
+                        }
+                        else if (e is Exception)
+                        {
+                            throw new Exception($" An exception was thrown with message: \n {e.Message}");
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    });
+
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+
             }
             catch (InvalidOperationException ex)
             {
@@ -140,6 +272,39 @@ namespace ProductAPIC.Controllers
                 await _shipProductCommandHandler.HandleAsync(command);
                 return Ok();
             }
+            catch (AggregateException ae)
+            {
+                try
+                {
+                    ae.Flatten().Handle(e =>
+                    {
+                        if (e is InvalidOperationException)
+                        {
+                            throw new InvalidOperationException($" An invalid operation exception was thrown with message: \n {e.Message}");
+                        }
+                        else if (e is Exception)
+                        {
+                            throw new Exception($" An exception was thrown with message: \n {e.Message}");
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    });
+
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+
+            }
             catch (InvalidOperationException ex)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
@@ -159,6 +324,39 @@ namespace ProductAPIC.Controllers
                 command.Id = id;
                 await _addItemsToStockCommandHandler.HandleAsync(command);
                 return Ok();
+            }
+            catch (AggregateException ae)
+            {
+                try
+                {
+                    ae.Flatten().Handle(e =>
+                    {
+                        if (e is InvalidOperationException)
+                        {
+                            throw new InvalidOperationException($" An invalid operation exception was thrown with message: \n {e.Message}");
+                        }
+                        else if (e is Exception)
+                        {
+                            throw new Exception($" An exception was thrown with message: \n {e.Message}");
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    });
+
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+
             }
             catch (InvalidOperationException ex)
             {
@@ -180,6 +378,39 @@ namespace ProductAPIC.Controllers
                 await _removeItemsFromStockCommandHandler.HandleAsync(command);
                 return Ok();
             }
+            catch (AggregateException ae)
+            {
+                try
+                {
+                    ae.Flatten().Handle(e =>
+                    {
+                        if (e is InvalidOperationException)
+                        {
+                            throw new InvalidOperationException($" An invalid operation exception was thrown with message: \n {e.Message}");
+                        }
+                        else if (e is Exception)
+                        {
+                            throw new Exception($" An exception was thrown with message: \n {e.Message}");
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    });
+
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+
+            }
             catch (InvalidOperationException ex)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
@@ -199,6 +430,39 @@ namespace ProductAPIC.Controllers
                 command.Id = id;
                 await _increaseReservedItemsCommandHandler.HandleAsync(command);
                 return Ok();
+            }
+            catch (AggregateException ae)
+            {
+                try
+                {
+                    ae.Flatten().Handle(e =>
+                    {
+                        if (e is InvalidOperationException)
+                        {
+                            throw new InvalidOperationException($" An invalid operation exception was thrown with message: \n {e.Message}");
+                        }
+                        else if (e is Exception)
+                        {
+                            throw new Exception($" An exception was thrown with message: \n {e.Message}");
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    });
+
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+
             }
             catch (InvalidOperationException ex)
             {
@@ -220,6 +484,39 @@ namespace ProductAPIC.Controllers
                 await _decreaseReservedItemsCommandHandler.HandleAsync(command);
                 return Ok();
             }
+            catch (AggregateException ae)
+            {
+                try
+                {
+                    ae.Flatten().Handle(e =>
+                    {
+                        if (e is InvalidOperationException)
+                        {
+                            throw new InvalidOperationException($" An invalid operation exception was thrown with message: \n {e.Message}");
+                        }
+                        else if (e is Exception)
+                        {
+                            throw new Exception($" An exception was thrown with message: \n {e.Message}");
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    });
+
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+
+            }
             catch (InvalidOperationException ex)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
@@ -239,6 +536,39 @@ namespace ProductAPIC.Controllers
                 command.Id = id;
                 await _deleteProductCommandHandler.HandleAsync(command);
                 return Ok();
+            }
+            catch (AggregateException ae)
+            {
+                try
+                {
+                    ae.Flatten().Handle(e =>
+                    {
+                        if (e is InvalidOperationException)
+                        {
+                            throw new InvalidOperationException($" An invalid operation exception was thrown with message: \n {e.Message}");
+                        }
+                        else if (e is Exception)
+                        {
+                            throw new Exception($" An exception was thrown with message: \n {e.Message}");
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    });
+
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+
             }
             catch (InvalidOperationException ex)
             {

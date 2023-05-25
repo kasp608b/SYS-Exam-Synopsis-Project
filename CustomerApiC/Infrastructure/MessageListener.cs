@@ -5,7 +5,6 @@ using EasyNetQ;
 using EventStore.Client;
 using SharedModels;
 using SharedModels.EventStoreCQRS;
-using System.Threading;
 
 namespace CustomerApi.Infrastructure
 {
@@ -28,44 +27,70 @@ namespace CustomerApi.Infrastructure
             var connectionEstablished = false;
             using (var bus = RabbitHutch.CreateBus(connectionString))
             {
-                while (!connectionEstablished)
+                try
                 {
+                    while (!connectionEstablished)
+                    {
 
-                    Console.WriteLine("Started Listening on " + connectionString + " ");
+                        Console.WriteLine("Started Listening on " + connectionString + " ");
 
-                    // * shipped
-                    var subscriptionResult = bus.PubSub.SubscribeAsync<OrderStatusChangedMessage>("customerApiHkShipped",
-                        HandleOrderShipped, x => x.WithTopic("shipped")).AsTask();
+                        // * shipped
+                        var subscriptionResult = bus.PubSub.SubscribeAsync<OrderStatusChangedMessage>("customerApiHkShipped",
+                            HandleOrderShipped, x => x.WithTopic("shipped")).AsTask();
 
-                    // * credit standing changed
-                    bus.PubSub.Subscribe<CreditStandingChangedMessage>("customerApiHkCreditStandingChanged",
-                        HandleCreditStandingChanged);
+                        // * credit standing changed
+                        bus.PubSub.Subscribe<CreditStandingChangedMessage>("customerApiHkCreditStandingChanged",
+                            HandleCreditStandingChanged);
 
 
-                    // * cancelled
-                    bus.PubSub.Subscribe<OrderStatusChangedMessage>("customerApiHkCancelled",
-                        HandleOrderCancelled, x => x.WithTopic("cancelled"));
+                        // * cancelled
+                        bus.PubSub.Subscribe<OrderStatusChangedMessage>("customerApiHkCancelled",
+                            HandleOrderCancelled, x => x.WithTopic("cancelled"));
 
-                    // * order rejected
-                    bus.PubSub.Subscribe<OrderRejectedMessage>("customerApiHkOrderRejected",
-                        HandleOrderRejected);
+                        // * order rejected
+                        bus.PubSub.Subscribe<OrderRejectedMessage>("customerApiHkOrderRejected",
+                            HandleOrderRejected);
 
-                    // * order compleated
-                    bus.PubSub.Subscribe<OrderStatusChangedMessage>("customerApiHkCompleted",
-                       HandleOrderCompleted, x => x.WithTopic("completed"));
+                        // * order compleated
+                        bus.PubSub.Subscribe<OrderStatusChangedMessage>("customerApiHkCompleted",
+                           HandleOrderCompleted, x => x.WithTopic("completed"));
 
-                    await subscriptionResult.WaitAsync(CancellationToken.None);
-                    connectionEstablished = subscriptionResult.Status == TaskStatus.RanToCompletion;
-                    if (!connectionEstablished) Thread.Sleep(1000);
+                        await subscriptionResult.WaitAsync(CancellationToken.None);
+                        connectionEstablished = subscriptionResult.Status == TaskStatus.RanToCompletion;
+                        if (!connectionEstablished) Thread.Sleep(1000);
+                    }
+
+                    Console.WriteLine("connectionEstablished= " + connectionEstablished);
+
+                    // Block the thread so that it will not exit and stop subscribing.
+                    lock (this)
+                    {
+                        Monitor.Wait(this);
+                    }
+
+                }
+                catch (AggregateException ae)
+                {
+                    ae.Flatten().Handle(e =>
+                    {
+                        if (e is InvalidOperationException)
+                        {
+                            Console.WriteLine($" An invalid operation exception was thrown with message: \n {e.Message}");
+                            return true;
+                        }
+                        else if (e is Exception)
+                        {
+                            Console.WriteLine($" An exception was thrown with message: \n {e.Message}");
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    });
+
                 }
 
-                Console.WriteLine("connectionEstablished= " + connectionEstablished);
-
-                // Block the thread so that it will not exit and stop subscribing.
-                lock (this)
-                {
-                    Monitor.Wait(this);
-                }
             }
 
         }
@@ -83,7 +108,7 @@ namespace CustomerApi.Infrastructure
 
                 if (message.CustomerId != null && eventStore != null && emailService != null)
                 {
-                    var customer = await eventStore.Find<Customer,Guid>((Guid)message.CustomerId, eventDeserializer, cancellationToken);
+                    var customer = await eventStore.Find<Customer, Guid>((Guid)message.CustomerId, eventDeserializer, cancellationToken);
 
                     if (customer == null)
                         return;
@@ -118,7 +143,7 @@ namespace CustomerApi.Infrastructure
                     var customer = await eventStore.Find<Customer, Guid>((Guid)message.CustomerId, eventDeserializer, cancellationToken);
                     if (customer == null)
                         return;
-                    
+
                     decimal totalPrice = 0;
 
                     var sb = new System.Text.StringBuilder();
@@ -159,13 +184,13 @@ namespace CustomerApi.Infrastructure
 
                 if (eventStore != null && emailService != null && productServiceGateway != null)
                 {
-                    
+
                     var customer = await eventStore.Find<Customer, Guid>((Guid)message.orderDto.CustomerId, eventDeserializer, cancellationToken);
                     if (customer == null)
                         return;
-                    
+
                     decimal totalPrice = 0;
-                    
+
 
                     var sb = new System.Text.StringBuilder();
                     sb.AppendLine($"Dear {customer.CompanyName}");
@@ -194,7 +219,7 @@ namespace CustomerApi.Infrastructure
             Console.WriteLine("Handle credit status changed called");
             using (var scope = provider.CreateScope())
             {
-                
+
                 var services = scope.ServiceProvider;
                 var eventStore = services.GetService<EventStoreClient>();
                 var eventDeserializer = services.GetService<EventDeserializer>();
@@ -203,9 +228,9 @@ namespace CustomerApi.Infrastructure
 
 
                 if (ChangeCustomerCreditStandingCommandHandler != null)
-                { 
-                
-                   await ChangeCustomerCreditStandingCommandHandler.HandleAsync(new ChangeCustomerCreditStanding { Id = message.CustomerId, CreditStanding = message.NewCreditStanding });
+                {
+
+                    await ChangeCustomerCreditStandingCommandHandler.HandleAsync(new ChangeCustomerCreditStanding { Id = message.CustomerId, CreditStanding = message.NewCreditStanding });
 
                 }
 
@@ -228,14 +253,14 @@ namespace CustomerApi.Infrastructure
 
                 if (message.CustomerId != Guid.Empty && ChangeCustomerCreditStandingCommandHandler != null && emailService != null && productServiceGateway != null)
                 {
-                   
+
                     await ChangeCustomerCreditStandingCommandHandler.HandleAsync(new ChangeCustomerCreditStanding { Id = (Guid)message.CustomerId, CreditStanding = false });
 
                     var customer = await eventStore.Find<Customer, Guid>((Guid)message.CustomerId, eventDeserializer, cancellationToken);
 
                     if (customer == null)
                         return;
-                    
+
                     decimal totalPrice = 0;
 
                     var sb = new System.Text.StringBuilder();

@@ -1,5 +1,4 @@
 ﻿using CustomerApiC.Commands;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SharedModels.EventStoreCQRS;
 
@@ -30,7 +29,7 @@ namespace CustomerApiC.Controllers
         //POST api/<CustomerApiCController>/CreateCustomer
         [HttpPost("CreateCustomer")]
         public async Task<IActionResult> CreateCustomer([FromBody] CreateCustomer command)
-        { 
+        {
             try
             {
                 if (command.Id == Guid.Empty)
@@ -40,6 +39,39 @@ namespace CustomerApiC.Controllers
 
                 await _createCustomerCommandHandler.HandleAsync(command);
                 return Ok();
+            }
+            catch (AggregateException ae)
+            {
+                try
+                {
+                    ae.Flatten().Handle(e =>
+                    {
+                        if (e is InvalidOperationException)
+                        {
+                            throw new InvalidOperationException($" An invalid operation exception was thrown with message: \n {e.Message}");
+                        }
+                        else if (e is Exception)
+                        {
+                            throw new Exception($" An exception was thrown with message: \n {e.Message}");
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    });
+
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+
             }
             catch (InvalidOperationException ex)
             {
@@ -61,6 +93,39 @@ namespace CustomerApiC.Controllers
                 await _changeCustomerInfoCommandHandler.HandleAsync(command);
                 return Ok();
             }
+            catch (AggregateException ae)
+            {
+                try
+                {
+                    ae.Flatten().Handle(e =>
+                    {
+                        if (e is InvalidOperationException)
+                        {
+                            throw new InvalidOperationException($" An invalid operation exception was thrown with message: \n {e.Message}");
+                        }
+                        else if (e is Exception)
+                        {
+                            throw new Exception($" An exception was thrown with message: \n {e.Message}");
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    });
+
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+
+            }
             catch (InvalidOperationException ex)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
@@ -80,6 +145,39 @@ namespace CustomerApiC.Controllers
                 command.Id = id;
                 await _changeCustomerCreditStandingCommandHandler.HandleAsync(command);
                 return Ok();
+            }
+            catch (AggregateException ae)
+            {
+                try
+                {
+                    ae.Flatten().Handle(e =>
+                    {
+                        if (e is InvalidOperationException)
+                        {
+                            throw new InvalidOperationException($" An invalid operation exception was thrown with message: \n {e.Message}");
+                        }
+                        else if (e is Exception)
+                        {
+                            throw new Exception($" An exception was thrown with message: \n {e.Message}");
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    });
+
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+
             }
             catch (InvalidOperationException ex)
             {
@@ -102,6 +200,39 @@ namespace CustomerApiC.Controllers
                 await _deleteCustomerCommandHandler.HandleAsync(command);
                 return Ok();
             }
+            catch (AggregateException ae)
+            {
+                try
+                {
+                    ae.Flatten().Handle(e =>
+                    {
+                        if (e is InvalidOperationException)
+                        {
+                            throw new InvalidOperationException($" An invalid operation exception was thrown with message: \n {e.Message}");
+                        }
+                        else if (e is Exception)
+                        {
+                            throw new Exception($" An exception was thrown with message: \n {e.Message}");
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    });
+
+                }
+                catch (InvalidOperationException ex)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+
+            }
             catch (InvalidOperationException ex)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
@@ -111,7 +242,7 @@ namespace CustomerApiC.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-    
+
 
     }
 }
