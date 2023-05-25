@@ -14,6 +14,19 @@
       "UpstreamHttpMethod": [ "Get" ]
     },
     {
+      // ProductApiQ routes
+      "DownstreamPathTemplate": "/ProductApiQ",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "productapiq",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/productapi",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
       // ProductApiC routes
       "DownstreamPathTemplate": "/ProductApiC/{catchAll}",
       "DownstreamScheme": "http",
@@ -41,6 +54,19 @@
     },
     {
       // OrderApiQ routes
+      "DownstreamPathTemplate": "/OrderApiQ",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "orderapiq",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/orderapi",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      // OrderApiQ routes
       "DownstreamPathTemplate": "/OrderApiC/{catchAll}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -63,6 +89,19 @@
         }
       ],
       "UpstreamPathTemplate": "/customerapi/{catchAll}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      // CustomerApiQ routes
+      "DownstreamPathTemplate": "/CustomerApiQ",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "customerapiq",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/customerapi",
       "UpstreamHttpMethod": [ "Get" ]
     },
     {
